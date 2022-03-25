@@ -1,24 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams } from 'react-router-dom'
-import { Row, Col, Image, ListGroup, Button, Card, Container } from 'react-bootstrap'
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import { Row, Col, Image, ListGroup, Button, Card, Container, Form } from 'react-bootstrap'
 
-import { detailProduct } from '../actions/productActions'
+import { listProductDetail } from '../actions/productActions'
 import Rating from '../components/Rating'
-import axios from 'axios'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
 
 function ProductScreen() {
     const { id } = useParams()
-    // const [product, setProduct] = useState([])
-    const dispatch = useDispatch()
-    const productDetail = useSelector(state => state.productDetail)
+    const navigate = useNavigate()
+
+    const [qty, setQty] = useState(1) // Local state for quantity
+
+    const dispatch = useDispatch() //Create dispatch
+    const productDetail = useSelector(state => state.productDetail) // Specify which part of global state we are pulling data from
     const { error, loading, product } = productDetail
 
     useEffect(() => {
 
-        dispatch(detailProduct({id}))
+        dispatch(listProductDetail(id))
 
-    }, [dispatch])
+    }, [dispatch, id])
+
+    const addToCartHandler = () => {
+        navigate(`/cart/${id}?qty=${qty}`)
+    }
 
     return (
         <div>
@@ -32,74 +40,110 @@ function ProductScreen() {
                   </li>
                   <li className="breadcrumb-item active">
                     { 
-                        loading ? <h2>Loading...</h2>
-                        : error ? <h2>{error}</h2> 
-                        : product.name 
+                        product.name 
                     }
                   </li>
                 </ol>
               </nav>
             </Container>
           </section>
-          {/* Product Image */}
-          <Row>
-            <Col md={4}>
-              <Image src={product.image} alt={product.name} fluid />
-            </Col>
-
-            <Col md={5}>
-                <ListGroup variant="flush">
-                    <ListGroup.Item>
-                        <h3>{ product.name }</h3>
-                        <div className="right-rating">
-                            <Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} />
-                        </div>
-                    </ListGroup.Item>
-
-                    <ListGroup.Item>
-                        <h3>${ product.price }</h3>
-                    </ListGroup.Item>
-                    <ListGroup.Item>
-                        <h5 className="text-secondary">Description</h5>
-                        { product.description }
-                    </ListGroup.Item>
-                </ListGroup>
-            </Col>
-
-            <Col md={3}>
-                <Card>
-                    <ListGroup variant="flush">
-                        <ListGroup.Item>
-                            <Row>
-                                <Col>Price:</Col>
-                                <Col>
-                                    <strong>${product.price}</strong>
-                                </Col>
-                            </Row>
-                        </ListGroup.Item>
-
-                        <ListGroup.Item>
-                            <Row>
-                                <Col>Status:</Col>
-                                <Col>
-                                    <strong>{ product.countInStock >= 6 ? 'In Stock'
-                                            : product.countInStock >0 ? 'Only A Few Left'
-                                            : 'Sold Out'}</strong>
-                                </Col>
-                            </Row>
-                        </ListGroup.Item>
-                        <ListGroup.Item>
-                            <div className="d-grid gap-2 my-1">
+            {
+                //Loading Spinner
+                loading ? <Loader />
+                        : error ? <Message variant="danger">{ error }</Message>
+                        :
+                        // Product Details
+                        <Row>
+                            <Col md={4}>
                                 {
-                                    product.countInStock > 0 ? <Button variant="primary" type="button" size="lg">Add To Cart</Button>
-                                    : <Button variant="secondary" type="button" size="lg" disabled>Out Of Stock</Button>
+                                    <Image src={product.image} alt={product.name} fluid />
                                 }
-                            </div>
-                        </ListGroup.Item>
-                    </ListGroup>
-                </Card>
-            </Col>
-          </Row>
+                            </Col>
+
+                            <Col md={5}>
+                                <ListGroup variant="flush">
+                                    <ListGroup.Item>
+                                        <h3>{ product.name }</h3>
+                                        <div className="right-rating">
+                                            <Rating value={product.rating} text={`${product.numReviews} reviews`} color={'#f8e825'} />
+                                        </div>
+                                    </ListGroup.Item>
+
+                                    <ListGroup.Item>
+                                        <h3>${ product.price }</h3>
+                                    </ListGroup.Item>
+                                    <ListGroup.Item>
+                                        <h5 className="text-secondary">Description</h5>
+                                        { product.description }
+                                    </ListGroup.Item>
+                                </ListGroup>
+                            </Col>
+
+                            <Col md={3}>
+                                <Card>
+                                    <ListGroup variant="flush">
+                                        <ListGroup.Item>
+                                            <Row>
+                                                <Col>Price:</Col>
+                                                <Col>
+                                                    <strong>${product.price}</strong>
+                                                </Col>
+                                            </Row>
+                                        </ListGroup.Item>
+
+                                        <ListGroup.Item>
+                                            <Row>
+                                                <Col>Status:</Col>
+                                                <Col>
+                                                    <strong>{ product.countInStock >= 6 ? 'In Stock'
+                                                            : product.countInStock >0 ? 'Only A Few Left'
+                                                            : 'Sold Out'}</strong>
+                                                </Col>
+                                            </Row>
+                                        </ListGroup.Item>
+
+                                        { product.countInStock > 0 && (
+                                            <ListGroup.Item>
+                                                <Row>
+                                                    <Col>Qty</Col>
+                                                    <Col xs='auto' className="my-1">
+                                                        <Form.Control
+                                                            as="select"
+                                                            value={qty}
+                                                            onChange={(e) => setQty(e.target.value) }
+                                                        >
+                                                            {
+                                                                [...Array(product.countInStock).keys()].map((x) => (
+                                                                    <option key={x + 1} value={x + 1}>
+                                                                        {x + 1}
+                                                                    </option>
+                                                                ))
+                                                            }
+                                                        </Form.Control>
+                                                    </Col>
+                                                </Row>
+                                            </ListGroup.Item>
+                                        )}
+
+                                        <ListGroup.Item>
+                                            <div className="d-grid gap-2 my-1">
+                                                {
+                                                    product.countInStock > 0 ? //check if instock
+                                                        <Button variant="primary" type="button" size="lg" onClick={addToCartHandler}>
+                                                            Add To Cart
+                                                        </Button>
+                                                        : //out of stock
+                                                        <Button variant="secondary" type="button" size="lg" disabled> 
+                                                            Out Of Stock
+                                                        </Button>
+                                                }
+                                            </div>
+                                        </ListGroup.Item>
+                                    </ListGroup>
+                                </Card>
+                            </Col>
+                        </Row>
+            }
         </div>
     )
 }

@@ -17,10 +17,10 @@ export const productListReducer = (state = {products:[]}, action) =>{
     }
 }
 
-export const productDetailReducer = (state = {product:{}}, action) => {
+export const productDetailReducer = (state = { product:{reviews:[]} }, action) => {
     switch(action.type) {
         case PRODUCT_DETAIL_REQUEST:
-            return {loading: true, product: {}}
+            return {loading: true, ...state}
 
         case PRODUCT_DETAIL_SUCCESS:
             return {loading: false, product: action.payload }
