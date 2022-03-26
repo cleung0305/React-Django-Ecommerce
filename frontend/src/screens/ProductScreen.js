@@ -10,7 +10,7 @@ import Message from '../components/Message'
 
 function ProductScreen() {
     const { id } = useParams()
-    const navigate = useNavigate()
+    const navigate = useNavigate() // create navigation
 
     const [qty, setQty] = useState(1) // Local state for quantity
 
@@ -24,8 +24,8 @@ function ProductScreen() {
 
     }, [dispatch, id])
 
-    const addToCartHandler = () => {
-        navigate(`/cart/${id}?qty=${qty}`)
+    const addToCartHandler = () => { // Add to cart function
+        navigate(`/cart/${id}?qty=${qty}`) // navigate to the cart with variables
     }
 
     return (

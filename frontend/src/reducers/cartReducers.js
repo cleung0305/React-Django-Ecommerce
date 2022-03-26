@@ -7,11 +7,12 @@ export const cartReducer = (state = { cartItems:[] }, action) => {
             const existItem = state.cartItems.find(cartItem => cartItem.product === item.product) //check if the item to be updated are already in the cart
 
             if(existItem){
+                item.qty = item.qty + existItem.qty // update the qty of the item
                 return{
                     ...state,
-                    cartItems: state.cartItems.map(cartItem => (
+                    cartItems: state.cartItems.map(cartItem => 
                             cartItem.product === existItem.product ? item : cartItem //replace the cartItem with the new Item, which has an updated qty
-                        ))
+                        )
                 }
             }else{
                 return{
