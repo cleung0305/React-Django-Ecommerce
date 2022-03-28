@@ -4,6 +4,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Button, Card, Container, Form } from 'react-bootstrap'
 
 import { listProductDetail } from '../actions/productActions'
+import { addToCart } from '../actions/cartActions'
 import Rating from '../components/Rating'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
@@ -18,21 +19,25 @@ function ProductScreen() {
     const productDetail = useSelector(state => state.productDetail) // Specify which part of global state we are pulling data from
     const { error, loading, product } = productDetail
 
+    const cart = useSelector(state => state.cart) //grab the cart state for cart message
+    const { message } = cart
+
     useEffect(() => {
 
         dispatch(listProductDetail(id))
 
     }, [dispatch, id])
 
-    const addToCartHandler = () => { // Add to cart function
-        navigate(`/cart/${id}?qty=${qty}`) // navigate to the cart with variables
+    const addToCartHandler = (productId) => { // Add to cart function
+        // navigate(`/cart/${id}?qty=${qty}`) // navigate to the cart with variables 
+        dispatch(addToCart(productId, qty))
     }
 
     return (
         <div>
           {/* Breadcrumb */}
           <section id="bc" className="my-3">
-            <Container>
+            <div>
               <nav>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
@@ -45,8 +50,15 @@ function ProductScreen() {
                   </li>
                 </ol>
               </nav>
-            </Container>
+            </div>
           </section>
+            
+            {/* Message section for adding item to cart */}
+            {
+                message && <Message className="addItemMessage" variant="primary">{message}<Button type="button" onClick={() => console.log('clicked')}>x</Button></Message>
+            }
+
+
             {
                 //Loading Spinner
                 loading ? <Loader />
@@ -129,7 +141,7 @@ function ProductScreen() {
                                             <div className="d-grid gap-2 my-1">
                                                 {
                                                     product.countInStock > 0 ? //check if instock
-                                                        <Button variant="primary" type="button" size="lg" onClick={addToCartHandler}>
+                                                        <Button variant="primary" type="button" size="lg" onClick={() => addToCartHandler(product._id)}>
                                                             Add To Cart
                                                         </Button>
                                                         : //out of stock
