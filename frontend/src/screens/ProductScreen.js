@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link, useParams, useNavigate } from 'react-router-dom'
-import { Row, Col, Image, ListGroup, Button, Card, Container, Form } from 'react-bootstrap'
+import { Link, useParams } from 'react-router-dom'
+import { Row, Col, Image, ListGroup, Button, Card, Form } from 'react-bootstrap'
 
 import { listProductDetail } from '../actions/productActions'
 import { addToCart } from '../actions/cartActions'
@@ -11,7 +11,6 @@ import Message from '../components/Message'
 
 function ProductScreen() {
     const { id } = useParams()
-    const navigate = useNavigate() // create navigation
 
     const [qty, setQty] = useState(1) // Local state for quantity
 
@@ -29,7 +28,6 @@ function ProductScreen() {
     }, [dispatch, id])
 
     const addToCartHandler = (productId) => { // Add to cart function
-        // navigate(`/cart/${id}?qty=${qty}`) // navigate to the cart with variables 
         dispatch(addToCart(productId, qty))
     }
 
@@ -55,7 +53,7 @@ function ProductScreen() {
             
             {/* Message section for adding item to cart */}
             {
-                message && <Message className="addItemMessage" variant="primary">{message}<Button type="button" onClick={() => console.log('clicked')}>x</Button></Message>
+                message && <Message variant="primary">{message}</Message>
             }
 
 
