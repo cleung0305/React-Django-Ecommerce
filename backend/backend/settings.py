@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'rest_framework',
     "corsheaders",
 
-    'base',
+    'base.apps.BaseConfig',
 ]
 
 
@@ -188,3 +188,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 # CORS_ALLOW_ALL_ORIGINS = True
+
+# Custom Backend Authentication, allow users to login using email
+AUTHENTICATION_BACKENDS = ('base.custombackends.EmailBackend',)
