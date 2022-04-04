@@ -6,4 +6,4 @@ def updateUser(sender, instance, **kwargs) -> None:
     if user.email != '':
         user.username = user.email
 
-pre_save.connect(updateUser, sender=User)
+pre_save.connect(updateUser, sender=User, dispatch_uid="update_user_identifier")

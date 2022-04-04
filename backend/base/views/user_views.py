@@ -7,12 +7,11 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Product, Order, OrderItem, Review, ShippingAddress
-from .serializers import UserSerializer, UserSerializerWithToken, ProductSerializer
+from base.serializers import UserSerializer, UserSerializerWithToken
 
 # SimpleJWT imports
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import MyTokenObtainPairSerializer
+from base.serializers import MyTokenObtainPairSerializer
 
 # Create your views here.
 
@@ -47,16 +46,4 @@ def getUserProfile(request): # Checkout your user profile
 def getUsers(request): # get all users in the database
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def getProducts(request): # get all products
-    products = Product.objects.filter(isPublished=True)
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def getProduct(request, pk): # get single product
-    product = Product.objects.get(_id=pk)
-    serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
