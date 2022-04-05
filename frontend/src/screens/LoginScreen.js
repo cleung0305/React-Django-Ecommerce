@@ -19,7 +19,7 @@ function LoginScreen() {
     const redirect = location.search ? location.search.split('=')[1] : ''
 
     const userLogin = useSelector(state => state.userLogin)
-    const { loading, userInfo, error } = userLogin
+    const { userInfo, loading, error } = userLogin
 
     useEffect(() => {
         if (userInfo){
@@ -27,22 +27,25 @@ function LoginScreen() {
         }
     }, [navigate, userInfo, redirect])
 
-    const submitHandler = (e) => {
+    const submitLoginHandler = (e) => {
         e.preventDefault()
         dispatch(loginUser(email, password))
     }
 
     return (
         <FormContainer>
-            <h1>Sign In</h1>
-            <Form onSubmit={submitHandler}>
+            <h2>Sign In</h2>
+            {error && <Message variant="danger">{error}</Message>}
+            {loading && <Loader />}
+
+            <Form onSubmit={submitLoginHandler} controlId="email">
                 <Form.Group className="my-2">
                     <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Username / Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                    <Form.Control type="email" placeholder="Username / Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </Form.Group>
-                <Form.Group className="my-2">
+                <Form.Group className="my-2" controlId="password">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </Form.Group>
 
                 <Button type="submit" variant="primary" className="my-2">Sign In</Button>
@@ -50,7 +53,7 @@ function LoginScreen() {
 
             <Row className="py-3">
                 <Col>
-                    Don't have an account? <Link to={redirect ? `/register?register=${redirect}` : '/register'}>Register here</Link>
+                    Don't have an account? <Link to={redirect ? `/register?redirect=${redirect}` : '/register'}>Register here</Link>
                 </Col>
             </Row>
         </FormContainer>
