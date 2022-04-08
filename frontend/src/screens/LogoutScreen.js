@@ -15,7 +15,9 @@ function LogoutScreen() {
     useEffect(() => {
         const timeout = setTimeout(() => {
             navigate(`/${redirect}`)
-        }, 5000)
+        }, 3000)
+
+        return () => clearTimeout(timeout)
     }, [])
 
     return (

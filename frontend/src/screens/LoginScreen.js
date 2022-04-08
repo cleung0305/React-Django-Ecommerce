@@ -29,7 +29,7 @@ function LoginScreen() {
 
     const submitLoginHandler = (e) => {
         e.preventDefault()
-        dispatch(loginUser(email, password))
+        dispatch(loginUser(email, password)) //Log in the user
     }
 
     return (

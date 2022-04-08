@@ -43,11 +43,17 @@ function Header() {
                         userInfo ? 
                             (
                                 <NavDropdown title={userInfo.name} id="username">
-                                    <LinkContainer to="/cart">
-                                        <NavDropdown.Item><i className='fas fa-user'></i> Profile</NavDropdown.Item>
+                                    <LinkContainer to="/profile">
+                                        <NavDropdown.Item className="mt-1 p-2"><i className='fas fa-user'></i> Profile</NavDropdown.Item>
                                     </LinkContainer>
 
-                                    <NavDropdown.Item onClick={logoutHandler}><i className="fa-solid fa-right-from-bracket"></i> Logout</NavDropdown.Item>
+                                    <LinkContainer to="/profile/orders">
+                                        <NavDropdown.Item className="mt-1 p-2"><i className="fa-solid fa-clipboard"></i> Orders</NavDropdown.Item>
+                                    </LinkContainer>
+
+
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item className="mt-1 p-2" onClick={logoutHandler}><i className="fa-solid fa-right-from-bracket"></i> Logout</NavDropdown.Item>
                                 </NavDropdown>
                             )
                             : 

@@ -27,14 +27,14 @@ function RegisterScreen() {
 
     useEffect(() => {
         if(userInfo){
-            navigate(`/${redirect}`)
+            navigate(`${redirect}`)
         }
     },[navigate, userInfo, redirect])
 
     const submitRegisterHandler = (e) => {
         e.preventDefault()
 
-        if(password != confirmPassword){
+        if(password !== confirmPassword){
             setMessage('Password does not match')
         } else{
             dispatch(registerUser(name, email, password))
@@ -49,21 +49,21 @@ function RegisterScreen() {
             {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />}
             <Form onSubmit={submitRegisterHandler}>
-                <Form.Group className="my-2" controlId="password">
+                <Form.Group className="my-2" controlid="password">
                     <Form.Label>Name</Form.Label>
                     <Form.Control type="name" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
                 </Form.Group>
-                <Form.Group className="my-2" controlId="password">
+                <Form.Group className="my-2" controlid="password">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control type="email" placeholder="Username / Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="my-2" controlId="password">
+                <Form.Group className="my-2" controlid="password">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="my-2" controlId="passwordConfirm">
+                <Form.Group className="my-2" controlid="passwordConfirm">
                     <Form.Label>Confirm Password</Form.Label>
                     <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                 </Form.Group>
