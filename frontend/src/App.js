@@ -14,6 +14,7 @@ import ProfileOrdersScreen from './screens/ProfileOrdersScreen'
 
 import ProductScreen from './screens/ProductScreen'
 import CartScreen from './screens/CartScreen'
+import ShippingScreen from './screens/ShippingScreen'
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
             {/* Products  */}
             <Route path='/product/:id' element={<ProductScreen />} />
             <Route path="/cart" element={<CartScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
             {/* <Route path="/cart/:productId" element={<CartScreen />} /> */}
           </Routes>
         </Container>

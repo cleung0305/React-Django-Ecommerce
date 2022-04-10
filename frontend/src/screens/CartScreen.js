@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react'
-import { Link, useParams, useLocation, useNavigate } from 'react-router-dom'
+import React, { } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 
 import Message from '../components/Message'
-import { addToCart, updateCart, removeFromCart } from '../actions/cartActions'
+import { updateCart, removeFromCart } from '../actions/cartActions'
 
 
 
@@ -35,9 +35,9 @@ function CartScreen() {
     return (
         <div>
             <Row>
+                <h2>Shopping Cart</h2>
                 {/* Cart Items */}
                 <Col md={9}> 
-                    <h1>Shopping Cart</h1>
                     { cartItems.length === 0 ? (
                         <Message variant="info">
                             Your cart is empty, <Link to="/">Contiune Shopping</Link>
@@ -86,6 +86,18 @@ function CartScreen() {
                                     </Row>
                                 </ListGroup.Item>
                             ))}
+
+                            <ListGroup.Item className="ms-auto">
+                                <Button 
+                                    type='button'
+                                    size="lg"
+                                    className="my-2"
+                                    disabled={cartItems.length === 0}
+                                    onClick={() => checkoutHandler()}
+                                >
+                                    Continue to checkout
+                                </Button>
+                            </ListGroup.Item>
                         </ListGroup>
                     )}
                 </Col>
@@ -94,19 +106,27 @@ function CartScreen() {
                     <Card>
                         <ListGroup variant="flush">
                             <ListGroup.Item> {/**Total number of items */}
-                                <h2>Subtotal ({ cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty), 0) }) items</h2>
-                                ${ cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0).toFixed(2) } {/**Subtotal price */}
+                                <h4>Subtotal ({ cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty), 0) }) items</h4>
                             </ListGroup.Item>
 
-                            <ListGroup.Item>
-                                <Button 
-                                    type='button'
-                                    size="lg"
-                                    disabled={cartItems.length === 0}
-                                    onClick={() => checkoutHandler()}
-                                >
-                                    PROCEED TO CHECKOUT
-                                </Button>
+                            {
+                                cartItems.map(cartItem => (
+                                    <ListGroup.Item key={ `summary-${cartItem.productId}` }>
+                                        <Row>
+                                            <Col md={8} style={{fontSize:"11px"}}> {/**Item name and qty */}
+                                                {cartItem.qty} &times; {cartItem.name}
+                                            </Col>
+
+                                            <Col md={4} sm="auto" style={{fontSize:"11px", display:"flex"}}>
+                                                <p className="ms-auto">${(cartItem.price * cartItem.qty).toFixed(2)}</p>
+                                            </Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                ))
+                            }
+
+                            <ListGroup.Item className="ms-auto">
+                                ${ cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0).toFixed(2) } {/**Subtotal price */}
                             </ListGroup.Item>
                         </ListGroup>
                     </Card>
