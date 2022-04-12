@@ -1,10 +1,11 @@
-import React, { } from 'react'
+import React, { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 
 import Message from '../components/Message'
-import { updateCart, removeFromCart } from '../actions/cartActions'
+import CartSummary from '../components/CartSummary'
+import { updateCart, removeFromCart, cartValidationMessage } from '../actions/cartActions'
 
 
 
@@ -16,24 +17,37 @@ function CartScreen() {
 
     const dispatch = useDispatch()
     const cart = useSelector( state => state.cart )
-    const { cartItems } = cart
+    const { cartItems, message } = cart
 
-    // useEffect(() => {
-    //     if(productId) {
-    //         dispatch(addToCart(productId, qty))
-    //     }
-    // }, [dispatch])
+    useEffect(() => {
+        // Update Items in-stock status when the page first loaded 
+        cartItems.map(cartItem => {
+            dispatch(updateCart(cartItem.productId, cartItem.qty))
+        })
+    }, [])
 
     const removeFromCartHandler = (id) => {
         dispatch(removeFromCart(id))
     }
 
+    //Validate cart status on 'continue'
+    const validateCartStatus = () => {
+        cartItems.map(cartItem => {
+            if (cartItem.qty === 0) {
+                dispatch(cartValidationMessage("Items with 0 quantity have been removed from your cart"))
+                removeFromCartHandler(cartItem.productId)
+            }
+        })
+    }
+
     const checkoutHandler = () => {
+        validateCartStatus()
         navigate('/login?redirect=shipping')
     }
 
     return (
         <div>
+            {  message && <Message variant="primary">{message}</Message> }
             <Row>
                 <h2>Shopping Cart</h2>
                 {/* Cart Items */}
@@ -47,43 +61,67 @@ function CartScreen() {
                             {cartItems.map( cartItem => (
                                 <ListGroup.Item key={ cartItem.productId }>
                                     <Row>
-                                        <Col md={1}> {/**Item image */}
+                                        {/*Item image */}
+                                        <Col md={3}>
                                             <Link to={`/product/${cartItem.productId}`}>
                                                 <Image src={ cartItem.image } alt={ cartItem.name } fluid rounded/>
                                             </Link>
                                         </Col>
-                                        <Col md={6}> {/**Item name */}
-                                            <Link to={`/product/${cartItem.productId}`}>{cartItem.name}</Link>
-                                        </Col>
-                                        <Col md={1}> {/**Price per item */}
-                                            {cartItem.price}
-                                        </Col>
-                                        <Col md={2}> {/**Drop down qty select */}
-                                            <Form.Select 
-                                                aria-label="Select Quantity" 
-                                                as="select" 
-                                                value={cartItem.qty} 
-                                                onChange={(e) => dispatch(updateCart(cartItem.productId, e.target.value)) }
-                                                className="py-0"
-                                            >  
-                                                <option key={0} value={0}>0</option>
-                                                { [...Array(cartItem.countInStock).keys()].map((x) => (
-                                                    <option key={x + 1} value={x + 1}>
-                                                        {x + 1}
-                                                    </option>
-                                                )) }
-                                            </Form.Select>
-                                        </Col>
 
-                                        <Col md={1}> {/**Total price for this item */}
-                                            ${(cartItem.price * cartItem.qty).toFixed(2)}
-                                        </Col>
-                                        <Col md={1}> {/**Remove item button */}
-                                            <Button type="button" variant="light" className="py-0 my-0" onClick={() => removeFromCartHandler(cartItem.productId)}>
-                                                <i className="fa-solid fa-trash"></i>
-                                            </Button>
+                                        <Col md={9}>
+                                            <Row>
+                                                <Col md={8} sm={12}>
+                                                    <Link to={`/product/${cartItem.productId}`}>{cartItem.name}</Link>
+                                                </Col>
+
+                                                <Col md={4} sm={12} className="d-flex">
+                                                    <p className="ms-auto">${(cartItem.price * cartItem.qty).toFixed(2)}</p>
+                                                </Col>
+                                            </Row>
+
+                                            <Row>
+                                                <Col md={8} sm={12}>
+                                                    { cartItem.countInStock > 0 ? 'In Stock' : 'Out of Stock' }
+                                                </Col>
+
+                                                <Col md={4} sm={12}>
+                                                    {
+                                                        cartItem.countInStock > 0 ?
+                                                            //In stock
+                                                            <Form.Select 
+                                                                aria-label="Select Quantity" 
+                                                                as="select" 
+                                                                className="py-0"
+                                                                value={cartItem.qty} 
+                                                                onChange={(e) => dispatch(updateCart(cartItem.productId, e.target.value)) }
+                                                            >  
+                                                                <option key={0} value={0}>0</option>
+                                                                { [...Array(cartItem.countInStock).keys()].map((x) => (
+                                                                    <option key={x + 1} value={x + 1}>
+                                                                        {x + 1}
+                                                                    </option>
+                                                                )) }
+                                                            </Form.Select>
+                                                        : //out of stock 
+                                                            <Form.Select
+                                                                aria-label="Select Quantity" 
+                                                                as="select" 
+                                                                className="py-0"
+                                                                value={0}
+                                                                disabled
+                                                            >
+                                                                <option key={0} value={0}>0</option>
+                                                            </Form.Select>
+                                                    }
+                                                </Col>
+                                            </Row>
                                         </Col>
                                     </Row>
+
+                                    <Button size="sm" type="button" variant="light" className="ms-auto" style={{"position": "absolute", "right": 10, "bottom": 10}} onClick={() => removeFromCartHandler(cartItem.productId)}>
+                                        Remove
+                                    </Button>
+
                                 </ListGroup.Item>
                             ))}
 
@@ -103,33 +141,7 @@ function CartScreen() {
                 </Col>
                 {/* Cart Summary */}
                 <Col md={3}>
-                    <Card>
-                        <ListGroup variant="flush">
-                            <ListGroup.Item> {/**Total number of items */}
-                                <h4>Subtotal ({ cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty), 0) }) items</h4>
-                            </ListGroup.Item>
-
-                            {
-                                cartItems.map(cartItem => (
-                                    <ListGroup.Item key={ `summary-${cartItem.productId}` }>
-                                        <Row>
-                                            <Col md={8} style={{fontSize:"11px"}}> {/**Item name and qty */}
-                                                {cartItem.qty} &times; {cartItem.name}
-                                            </Col>
-
-                                            <Col md={4} sm="auto" style={{fontSize:"11px", display:"flex"}}>
-                                                <p className="ms-auto">${(cartItem.price * cartItem.qty).toFixed(2)}</p>
-                                            </Col>
-                                        </Row>
-                                    </ListGroup.Item>
-                                ))
-                            }
-
-                            <ListGroup.Item className="ms-auto">
-                                ${ cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0).toFixed(2) } {/**Subtotal price */}
-                            </ListGroup.Item>
-                        </ListGroup>
-                    </Card>
+                   <CartSummary />
                 </Col>
             </Row>
         </div>
