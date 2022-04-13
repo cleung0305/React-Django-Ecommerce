@@ -43,7 +43,7 @@ function RegisterScreen() {
     }
 
     return (
-        <FormContainer>
+        <FormContainer md={6}>
             <h2>Register</h2>
             {message && <Message variant="danger">{message}</Message>}
             {error && <Message variant="danger">{error}</Message>}

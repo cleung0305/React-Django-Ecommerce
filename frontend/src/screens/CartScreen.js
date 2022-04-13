@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
 
 import Message from '../components/Message'
-import CartSummary from '../components/CartSummary'
+import CartSummaryAccordion from '../components/CartSummaryAccordion'
 import { updateCart, removeFromCart, cartValidationMessage } from '../actions/cartActions'
 
 
@@ -33,8 +33,11 @@ function CartScreen() {
     //Validate cart status on 'continue'
     const validateCartStatus = () => {
         cartItems.map(cartItem => {
+            dispatch(updateCart(cartItem.productId, cartItem.qty))
             if (cartItem.qty === 0) {
-                dispatch(cartValidationMessage("Items with 0 quantity have been removed from your cart"))
+                if(!message){
+                    dispatch(cartValidationMessage("Items with zero quantity have been removed from your cart"))
+                }
                 removeFromCartHandler(cartItem.productId)
             }
         })
@@ -51,7 +54,7 @@ function CartScreen() {
             <Row>
                 <h2>Shopping Cart</h2>
                 {/* Cart Items */}
-                <Col md={9}> 
+                <Col md={8}> 
                     { cartItems.length === 0 ? (
                         <Message variant="info">
                             Your cart is empty, <Link to="/">Contiune Shopping</Link>
@@ -81,7 +84,7 @@ function CartScreen() {
 
                                             <Row>
                                                 <Col md={8} sm={12}>
-                                                    { cartItem.countInStock > 0 ? 'In Stock' : 'Out of Stock' }
+                                                    { cartItem.countInStock > 0 ? <p className="text-primary">In Stock</p> : <p className="text-muted">Out of Stock</p> }
                                                 </Col>
 
                                                 <Col md={4} sm={12}>
@@ -133,15 +136,15 @@ function CartScreen() {
                                     disabled={cartItems.length === 0}
                                     onClick={() => checkoutHandler()}
                                 >
-                                    Continue to checkout
+                                    Checkout
                                 </Button>
                             </ListGroup.Item>
                         </ListGroup>
                     )}
                 </Col>
                 {/* Cart Summary */}
-                <Col md={3}>
-                   <CartSummary />
+                <Col md={4}>
+                   <CartSummaryAccordion />
                 </Col>
             </Row>
         </div>

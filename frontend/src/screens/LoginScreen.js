@@ -33,7 +33,7 @@ function LoginScreen() {
     }
 
     return (
-        <FormContainer>
+        <FormContainer md={6}>
             <h2>Sign In</h2>
             {error && <Message variant="danger">{error}</Message>}
             {loading && <Loader />}

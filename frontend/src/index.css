@@ -16,6 +16,10 @@ h3{
     padding: 1rem 0;
 }
 
+.checkout-link-active{
+    color: #344859 !important;
+}
+
 .rating span{
     margin: 0.1rem;
 }
