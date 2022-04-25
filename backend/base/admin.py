@@ -18,8 +18,16 @@ class OrderAdmin(admin.ModelAdmin):
     search_fields = ['user', 'isPaid', 'isDelivered']
     list_per_page = 50
 
+class OrderItemAdmin(admin.ModelAdmin):
+    list_display = ['_id', 'name', 'quantity', 'price', 'get_total_price']
+    list_display_links = ['_id', 'name']
+    list_filter = ['name']
+
+    def get_total_price(self, obj):
+        return obj.price * obj.quantity
+
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Review)
-admin.site.register(OrderItem)
+admin.site.register(OrderItem, OrderItemAdmin)
 admin.site.register(ShippingAddress)
