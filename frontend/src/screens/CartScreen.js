@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap'
@@ -10,14 +10,28 @@ import { updateCart, removeFromCart, cartValidationMessage } from '../actions/ca
 
 
 function CartScreen() {
-    // const { productId } = useParams()
-    // const location = useLocation()
-    // const qty = location.search ? Number(location.search.split('=')[1]) : 1
+
     const navigate = useNavigate() // create navigate
 
     const dispatch = useDispatch()
     const cart = useSelector( state => state.cart )
     const { cartItems, message } = cart
+
+    const user = useSelector( state => state.userLogin)
+    const { userInfo } = user
+
+    // Validate cart status'
+    const validateCartStatus = () => {
+        cartItems.map(cartItem => {
+            dispatch(updateCart(cartItem.productId, cartItem.qty))
+            if (cartItem.qty === 0) {
+                if(!message){
+                    dispatch(cartValidationMessage("Items with zero quantity have been removed from your cart"))
+                }
+                dispatch(removeFromCart(cartItem.productId))
+            }
+        })
+    }
 
     useEffect(() => {
         // Update Items in-stock status when the page first loaded 
@@ -30,22 +44,14 @@ function CartScreen() {
         dispatch(removeFromCart(id))
     }
 
-    //Validate cart status on 'continue'
-    const validateCartStatus = () => {
-        cartItems.map(cartItem => {
-            dispatch(updateCart(cartItem.productId, cartItem.qty))
-            if (cartItem.qty === 0) {
-                if(!message){
-                    dispatch(cartValidationMessage("Items with zero quantity have been removed from your cart"))
-                }
-                removeFromCartHandler(cartItem.productId)
-            }
-        })
-    }
-
-    const checkoutHandler = () => {
+    const checkoutHandler = (checkoutMethod) => {
         validateCartStatus()
-        navigate('/login?redirect=shipping')
+        if(checkoutMethod === 'member'){
+            navigate('/login?redirect=shipping')
+        }
+        if(checkoutMethod === 'guest'){
+            navigate('/shipping')
+        }
     }
 
     return (
@@ -118,18 +124,54 @@ function CartScreen() {
                                                     }
                                                 </Col>
                                             </Row>
+                                            <Row>
+                                                <Col className="d-flex">
+                                                    <Button size="sm" type="button" variant="light" className="ms-auto mt-2" onClick={() => removeFromCartHandler(cartItem.productId)}>
+                                                        Remove
+                                                    </Button>
+                                                </Col>
+                                            </Row>
                                         </Col>
                                     </Row>
-
-                                    <Button size="sm" type="button" variant="light" className="ms-auto" style={{"position": "absolute", "right": 10, "bottom": 10}} onClick={() => removeFromCartHandler(cartItem.productId)}>
-                                        Remove
-                                    </Button>
 
                                 </ListGroup.Item>
                             ))}
 
                             <ListGroup.Item className="ms-auto">
-                                <Button 
+                                {
+                                    userInfo ? 
+                                        <Button type='button'
+                                            size="md"
+                                            className="my-2"
+                                            disabled={cartItems.length === 0}
+                                            onClick={() => checkoutHandler('member')}
+                                        >
+                                            Checkout
+                                        </Button>
+                                        : 
+                                        <>
+                                            {/* <Button 
+                                                type='button'
+                                                size="md"
+                                                className="m-2"
+                                                disabled={cartItems.length === 0}
+                                                onClick={() => checkoutHandler('guest')}
+                                            >
+                                                Guest Checkout
+                                            </Button> */}
+
+                                            <Button 
+                                                type='button'
+                                                size="md"
+                                                className="m-2"
+                                                disabled={cartItems.length === 0}
+                                                onClick={() => checkoutHandler('member')}
+                                            >
+                                                Member Checkout
+                                            </Button>
+                                        </>
+                                }
+                                {/* <Button 
                                     type='button'
                                     size="lg"
                                     className="my-2"
@@ -137,7 +179,7 @@ function CartScreen() {
                                     onClick={() => checkoutHandler()}
                                 >
                                     Checkout
-                                </Button>
+                                </Button> */}
                             </ListGroup.Item>
                         </ListGroup>
                     )}

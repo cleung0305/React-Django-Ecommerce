@@ -1,6 +1,6 @@
-import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_UPDATE_ITEM, CART_VALIDATION_MESSAGE, CART_SAVE_SHIPPING_ADDRESS } from '../constants/cartConstants'
+import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_UPDATE_ITEM, CART_VALIDATION_MESSAGE, CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD, CART_CALCULATE_PRICE, CART_CLEAR_ITEMS } from '../constants/cartConstants'
 
-export const cartReducer = (state = { cartItems:[], shippingAddress:{}, message:'', shippingPrice: 0, taxPrice: 0 }, action) => {
+export const cartReducer = (state = { cartItems:[], shippingAddress:{}, message:'' }, action) => {
     switch(action.type){
         case CART_ADD_ITEM:
             const item = action.payload
@@ -70,7 +70,32 @@ export const cartReducer = (state = { cartItems:[], shippingAddress:{}, message:
                 shippingAddress: action.payload,
             }
 
+        case CART_SAVE_PAYMENT_METHOD:
+            return {
+                ...state,
+                paymentMethod: action.payload
+            }
+
+        case CART_CALCULATE_PRICE:
+            const subtotalPrice = state.cartItems.reduce((acc, cartItem) => acc + cartItem.price * cartItem.qty, 0).toFixed(2)
+            const shippingPrice = Number(subtotalPrice >= 100 ? 0 : 10).toFixed(2)
+            const taxPrice = Number((0.082) * subtotalPrice).toFixed(2)
+            const totalPrice = (Number(subtotalPrice) + Number(shippingPrice) + Number(taxPrice)).toFixed(2)
+            return {
+                ...state,
+                subtotalPrice: subtotalPrice,
+                shippingPrice: shippingPrice,
+                taxPrice: taxPrice,
+                totalPrice: totalPrice,
+            }
+
+        case CART_CLEAR_ITEMS: // Fired off from OrderAction, after creating an order
+            return {
+                ...state,
+                cartItems: []
+            }
+
         default:
-            return {...state, shippingPrice: 0, taxPrice: 0}
+            return {...state}
     }
 }

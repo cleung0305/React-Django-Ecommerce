@@ -2,10 +2,15 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { Row, Col, Accordion, ListGroup, Card, Button } from 'react-bootstrap'
 
-function CartSummaryAccordion() {
+function CartSummaryAccordion({shippingPrice, taxPrice}) {
 
     const cart = useSelector( state => state.cart )
-    const { cartItems, shippingPrice, taxPrice } = cart
+    const { cartItems } = cart
+
+    const sPrice = shippingPrice ? Number(shippingPrice) : 0
+    const tPrice = taxPrice ? Number(taxPrice) : 0
+
+    console.log(shippingPrice, taxPrice)
 
     return (
         <div>
@@ -62,7 +67,7 @@ function CartSummaryAccordion() {
                         </Col>
 
                         <Col md={4} sm="auto" className="d-flex">
-                            <p className="ms-auto">${ shippingPrice.toFixed(2) }</p>
+                            <p className="ms-auto">${ sPrice.toFixed(2)}</p>
                         </Col>
                     </Row>
                 </ListGroup.Item>
@@ -74,7 +79,7 @@ function CartSummaryAccordion() {
                         </Col>
 
                         <Col md={6} sm="auto" className="d-flex">
-                            <p className={ taxPrice ? "ms-auto" : "text-muted ms-auto"}>{ taxPrice ? `$${taxPrice.toFixed(2)}` : 'Calculated in checkout'}</p>
+                            <p className={ taxPrice ? "ms-auto" : "text-muted ms-auto"}>{ tPrice ? `$${tPrice.toFixed(2)}` : 'Calculated in checkout'}</p>
                         </Col>
                     </Row>
                 </ListGroup.Item>
@@ -87,7 +92,7 @@ function CartSummaryAccordion() {
                         </Col>
 
                         <Col md={4} sm="auto" className="d-flex">
-                            <p className="ms-auto">${ Number(cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0).toFixed(2)) + shippingPrice + taxPrice }</p>
+                            <p className="ms-auto">${ (Number(cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0)) + sPrice + tPrice).toFixed(2) }</p>
                         </Col>
                     </Row>
                 </ListGroup.Item>

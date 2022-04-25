@@ -15,8 +15,11 @@ function ShippingScreen() {
     const cart = useSelector(state => state.cart)
     const { cartItems, shippingAddress, message } = cart
 
+    const user = useSelector( state => state.userLogin)
+    const { userInfo } = user
+
     const [streetAddress, setStreetAddress] = useState(shippingAddress.streetAddress)
-    const [aptAddress, setAptAddress] = useState(shippingAddress.aptAddress)
+    const [aptAddress, setAptAddress] = useState(shippingAddress.aptAddress ? shippingAddress.aptAddress : "")
     const [city, setCity] = useState(shippingAddress.city)
     const [state, setState] = useState(shippingAddress.state)
     const [zip, setZip] = useState(shippingAddress.zip)
@@ -28,7 +31,7 @@ function ShippingScreen() {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if(cartItems.length === 0){
+        if(cartItems.length === 0 || !userInfo){
             navigate('/cart')
         }
     }, [])
@@ -90,7 +93,6 @@ function ShippingScreen() {
                                 </Col>
                             </Row>
                             <span className="d-flex">
-                                <Button type="button" variant="primary" className="my-2 me-auto" onClick={() => navigate('/cart')}>Go Back</Button>
                                 <Button type="submit" variant="primary" className="my-2 ms-auto">Proceed to Payment</Button>
                             </span>
                         </Form>
