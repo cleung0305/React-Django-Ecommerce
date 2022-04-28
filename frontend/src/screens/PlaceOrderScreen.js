@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react'
-import { useLocation, useNavigate, Link } from 'react-router-dom'
-import { Row, Col, Form, Button, ListGroup, Image, Card } from 'react-bootstrap'
+import React, { useEffect } from 'react'
+import { useNavigate, Link } from 'react-router-dom'
+import { Row, Col, Button, ListGroup, Image } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Message from '../components/Message'
-import FormContainer from '../components/FormContainer'
 import CheckoutSteps from '../components/CheckoutSteps'
 import CartSummaryAccordion from '../components/CartSummaryAccordion'
 import { createOrder } from '../actions/orderActions'
@@ -21,10 +20,12 @@ function PlaceOrderScreen() {
     const user = useSelector(state => state.userLogin)
     const { userInfo } = user
 
-    cart.subtotalPrice = cartItems.reduce((acc, cartItem) => acc + cartItem.price * cartItem.qty, 0).toFixed(2)
-    cart.shippingPrice = Number(cart.subtotalPrice >= 100 ? 0 : 10).toFixed(2)
-    cart.taxPrice = Number((0.082) * cart.subtotalPrice).toFixed(2)
-    cart.totalPrice = (Number(cart.subtotalPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+    // cart.subtotalPrice = cartItems.reduce((acc, cartItem) => acc + cartItem.price * cartItem.qty, 0).toFixed(2)
+    // cart.shippingPrice = Number(cart.subtotalPrice >= 100 ? 0 : 10).toFixed(2)
+    // cart.taxPrice = Number((0.082) * cart.subtotalPrice).toFixed(2)
+    // cart.totalPrice = (Number(cart.subtotalPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+
+    // AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -39,7 +40,7 @@ function PlaceOrderScreen() {
         }
 
         if(success) {
-            navigate(`/order/${order._id}`)
+            navigate(`/orders/${order._id}`)
             dispatch({ type: ORDER_CREATE_RESET }) //clear the order state
         }
     }, [success, navigate])
@@ -70,10 +71,10 @@ function PlaceOrderScreen() {
                                 <Col md={2}><strong>Ship to:</strong></Col>
                                 <Col md={4} className="d-flex">
                                     <div className="ma-auto">
+                                        { shippingAddress.name } <br/>
                                         { shippingAddress.streetAddress }, <br/>
                                         { shippingAddress.aptAddress && `${shippingAddress.aptAddress},`} { shippingAddress.aptAddress && <br/> }
-                                        { shippingAddress.city }, <br/>
-                                        { shippingAddress.state }, { shippingAddress.zip }
+                                        { shippingAddress.city }, { shippingAddress.state } { shippingAddress.zip }
                                     </div>
                                 </Col>
                                 
@@ -127,7 +128,7 @@ function PlaceOrderScreen() {
                 </Col>
 
                 <Col md={4}>
-                    <CartSummaryAccordion shippingPrice={shippingPrice} taxPrice={taxPrice} />
+                    <CartSummaryAccordion items={cartItems} shippingPrice={shippingPrice} taxPrice={taxPrice} />
                     <ListGroup variant="flush">
                         <ListGroup.Item>
                             { error && <Message variant="danger">{error}</Message> }

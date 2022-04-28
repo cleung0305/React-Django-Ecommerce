@@ -7,6 +7,8 @@ from rest_framework import status
 from base.models import Product, Order, OrderItem, ShippingAddress
 from base.serializers import ProductSerializer, OrderSerializer
 
+from datetime import datetime
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def addOrderItems(request):
@@ -35,6 +37,7 @@ def addOrderItems(request):
 
         shipping = ShippingAddress.objects.create(
             order=order,
+            name=data['shippingAddress']['name'],
             street_address=data['shippingAddress']['streetAddress'],
             apt_address=apt_address,
             city=data['shippingAddress']['city'],
@@ -49,13 +52,41 @@ def addOrderItems(request):
                 product=product,
                 order=order,
                 name=product.name,
-                quantity=item['qty'],
+                qty=item['qty'],
                 price=item['price'],
                 image=product.image.url,
             )
 
-            product.countInStock -= orderItem.quantity
+            product.countInStock -= orderItem.qty
             product.save()
 
+        order.save()
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+    user = request.user
+    order = Order.objects.get(_id=pk)
+
+    try:
+        if order.user == user or user.is_staff:
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            message = {'detail': 'Not authorized to view this order'}
+            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except:
+        message = {'detail': 'Order with this order number does not exist'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def updateOrderToPaid(request, pk):
+    order = Order.objects.get(_id=pk)
+
+    order.isPaid = True
+    order.paid_date = datetime.now()
+    order.save()
+    return Response('Order paid')

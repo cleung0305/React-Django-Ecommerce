@@ -1,16 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { Row, Col, Accordion, ListGroup, Card, Button } from 'react-bootstrap'
+import { Row, Col, Accordion, ListGroup } from 'react-bootstrap'
 
-function CartSummaryAccordion({shippingPrice, taxPrice}) {
+function CartSummaryAccordion({items, subtotalPrice, shippingPrice, taxPrice, totalPrice}) {
 
-    const cart = useSelector( state => state.cart )
-    const { cartItems } = cart
-
+    const subPrice = subtotalPrice ? Number(subtotalPrice) : Number(items.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0).toFixed(2))
     const sPrice = shippingPrice ? Number(shippingPrice) : 0
     const tPrice = taxPrice ? Number(taxPrice) : 0
-
-    console.log(shippingPrice, taxPrice)
+    const totPrice = (Number(subPrice) + Number(sPrice) + Number(tPrice)).toFixed(2)
 
     return (
         <div>
@@ -27,7 +24,7 @@ function CartSummaryAccordion({shippingPrice, taxPrice}) {
                         <Accordion.Body eventkey="0">
                                 <>
                                     {
-                                        cartItems.map(cartItem => (
+                                        items.map(cartItem => (
                                             <div key={ `summary-${cartItem.productId}` }>
                                                 <Row className="mb-2">
                                                     <Col md={8} style={{fontSize:"11px"}}> {/**Item name and qty */}
@@ -55,7 +52,7 @@ function CartSummaryAccordion({shippingPrice, taxPrice}) {
                         </Col>
 
                         <Col md={4} sm="auto" className="d-flex">
-                            <p className="ms-auto">${ Number(cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0).toFixed(2)) }</p>
+                            <p className="ms-auto">${ subPrice }</p>
                         </Col>
                     </Row>
                 </ListGroup.Item>
@@ -92,7 +89,7 @@ function CartSummaryAccordion({shippingPrice, taxPrice}) {
                         </Col>
 
                         <Col md={4} sm="auto" className="d-flex">
-                            <p className="ms-auto">${ (Number(cartItems.reduce((acc, cartItem) => acc + Number(cartItem.qty) * cartItem.price, 0)) + sPrice + tPrice).toFixed(2) }</p>
+                            <p className="ms-auto">${ totPrice }</p>
                         </Col>
                     </Row>
                 </ListGroup.Item>

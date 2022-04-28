@@ -186,7 +186,7 @@ function CartScreen() {
                 </Col>
                 {/* Cart Summary */}
                 <Col md={4}>
-                   <CartSummaryAccordion />
+                   <CartSummaryAccordion items={cartItems} />
                 </Col>
             </Row>
         </div>

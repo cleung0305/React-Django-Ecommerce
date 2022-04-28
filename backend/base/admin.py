@@ -12,14 +12,14 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 30
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user', 'total_price', 'paymentMethod', 'isPaid', 'isDelivered', 'created_date']
+    list_display = ['_id', 'user', 'total_price', 'paymentMethod', 'isPaid', 'isDelivered', 'created_date']
     list_display_links = ['user']
     list_filter = ['user', 'isPaid', 'isDelivered']
     search_fields = ['user', 'isPaid', 'isDelivered']
     list_per_page = 50
 
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ['_id', 'name', 'quantity', 'price', 'get_total_price']
+    list_display = ['_id', 'name', 'qty', 'price', 'get_total_price']
     list_display_links = ['_id', 'name']
     list_filter = ['name']
 
