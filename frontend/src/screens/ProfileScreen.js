@@ -64,7 +64,7 @@ function ProfileScreen() {
             <ProfileHeader />
             <Container>
                 <Row>
-                    <Col md={12}>
+                    <Col md={6}>
                         <h2>Your Information</h2>
                         {messageSuccess && <Message variant="success">{messageSuccess}</Message>}
                         {message && <Message variant="danger">{message}</Message>}

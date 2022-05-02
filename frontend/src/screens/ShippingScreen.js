@@ -18,12 +18,12 @@ function ShippingScreen() {
     const user = useSelector( state => state.userLogin)
     const { userInfo } = user
 
+    const [name, setName] = useState(shippingAddress.name)
     const [streetAddress, setStreetAddress] = useState(shippingAddress.streetAddress)
     const [aptAddress, setAptAddress] = useState(shippingAddress.aptAddress ? shippingAddress.aptAddress : "")
     const [city, setCity] = useState(shippingAddress.city)
     const [state, setState] = useState(shippingAddress.state)
     const [zip, setZip] = useState(shippingAddress.zip)
-
 
     const location = useLocation()
     const navigate = useNavigate()
@@ -39,6 +39,7 @@ function ShippingScreen() {
     const submitShippingHandler = (e) => {
         e.preventDefault()
         dispatch(saveShippingAddress( {
+            name: name,
             streetAddress: streetAddress,
             aptAddress: aptAddress,
             city: city,
@@ -57,6 +58,10 @@ function ShippingScreen() {
                     <FormContainer md={8}>
                         <h2>Shipping Address</h2>
                         <Form onSubmit={submitShippingHandler}>
+                            <Form.Group className="my-2" controlid="name">
+                                <Form.Label>Name</Form.Label>
+                                <Form.Control type="text" placeholder="Your name" value={name ? name : ''} onChange={(e) => setName(e.target.value)} required />
+                            </Form.Group>
                             <Form.Group className="my-2" controlid="street-address">
                                 <Form.Label>Address</Form.Label>
                                 <Form.Control type="text" placeholder="Street address or P.O. Box" value={streetAddress ? streetAddress : ''} onChange={(e) => setStreetAddress(e.target.value)} required />
@@ -100,7 +105,7 @@ function ShippingScreen() {
                 </Col>
 
                 <Col md={4}>
-                    <CartSummaryAccordion />
+                    <CartSummaryAccordion items={cartItems} />
                 </Col>
             </Row>
         </div>

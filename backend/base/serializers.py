@@ -82,11 +82,11 @@ class OrderSerializer(serializers.ModelSerializer):
     
     def get_shippingAddress(self, obj):
         try:
-            shippingAddress = obj.shippingAddress
-            serializer = ShippingAddressSerializer(shippingAddress, many=False)
+            shippingAddress = obj.shippingaddress
+            data = ShippingAddressSerializer(shippingAddress, many=False).data
         except:
-            serializer = False
-        return serializer
+            data = False
+        return data
 
     def get_user(self, obj):
         user = obj.user

@@ -69,7 +69,7 @@ function PaymentScreen() {
                 </Col>
 
                 <Col md={4}>
-                    <CartSummaryAccordion shippingPrice={shippingPrice} taxPrice={taxPrice}/>
+                    <CartSummaryAccordion items={cartItems} shippingPrice={shippingPrice} taxPrice={taxPrice}/>
                 </Col>
             </Row>
         </div>
