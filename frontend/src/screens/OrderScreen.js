@@ -31,13 +31,13 @@ function OrderScreen() {
     const navigate = useNavigate()
     // AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P
 
-    const [sdkReady, setSdkReady] = useState(false)
+    const [sdkReady, setSdkReady] = useState(false) // State determine whether the SDK is ready to be mounted
 
     const addPayPalScript = () => {
         const script = document.createElement('script')
         script.type = 'text/javascript'
         script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
-        script.async = true
+        script.async = true //give it time for SDK to load
         script.onload = () => {
             setSdkReady(true)
         }
@@ -49,9 +49,9 @@ function OrderScreen() {
             dispatch({ type: ORDER_PAY_RESET }) //reset payment status after payment success
             dispatch(getOrderDetails(id))
         }
-        else if (!order.isPaid){
+        else if (!order.isPaid){ //check if the order is paid or not
             if(!window.paypal){
-                addPayPalScript()
+                addPayPalScript() //check if paypal sdk is mounted to page
             } else {
                 setSdkReady(true)
             }
