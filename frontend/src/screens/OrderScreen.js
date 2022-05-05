@@ -72,24 +72,6 @@ function OrderScreen() {
                        <h2>Order # { order._id }</h2>
                         <Col md={8}>
                             <ListGroup variant="flush">
-                                {/* <ListGroup.Item>
-                                    <h3>Order Status</h3>
-                                    <Row>
-                                        <Col md={2}><strong>Transaction:</strong></Col>
-                                        <Col md={4} className="d-flex">
-                                            <div className="ms-auto">
-                                                { order.isPaid ? "Completed" : "Incomplete"}
-
-                                            </div>
-                                        </Col>
-                                        <Col md={2}><strong>Delivery:</strong></Col>
-                                        <Col md={4} className="d-flex">
-                                            <div className="ms-auto">
-                                                { order.isDelivered ? "Delivered" : "In Progress"}
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </ListGroup.Item> */}
                                 <ListGroup.Item>
                                     <h3>Shipping</h3>
                                     <Row>

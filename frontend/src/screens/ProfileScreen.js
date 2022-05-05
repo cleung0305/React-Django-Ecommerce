@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Form, Button, Row, Col, FormControl, Container } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 

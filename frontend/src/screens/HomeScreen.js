@@ -21,10 +21,12 @@ function HomeScreen() {
 
     useEffect(() => {
         dispatch(listProducts())
-        setProductsOnPage(products.slice(0, PageSize))
-        const firstItemIndex = (currentPage - 1) * PageSize
-        const lastItemIndex = firstItemIndex + PageSize
-        setProductsOnPage(products.slice(firstItemIndex, lastItemIndex))
+        if(products){
+            setProductsOnPage(products.slice(0, PageSize))
+            const firstItemIndex = (currentPage - 1) * PageSize
+            const lastItemIndex = firstItemIndex + PageSize
+            setProductsOnPage(products.slice(firstItemIndex, lastItemIndex))
+        }
     }, [dispatch, currentPage])
 
     return (
@@ -44,7 +46,9 @@ function HomeScreen() {
                     </Row>
             }
 
-            <Pagination className="pagination-bar" currentPage={currentPage} totalCount={products.length} pageSize={PageSize} onPageChange={page => setCurrentPage(page)} />
+            { products && 
+                <Pagination className="pagination-bar" currentPage={currentPage} totalCount={products.length} pageSize={PageSize} onPageChange={page => setCurrentPage(page)} />
+            }
         </div>
     )
 }
