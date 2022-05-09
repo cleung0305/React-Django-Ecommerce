@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Row, Col, Container, ListGroup, Table , Button} from 'react-bootstrap'
-import { Linkontainer, LinkContainer } from 'react-router-bootstrap'
-import { Link, useNavigate } from 'react-router-dom'
+import { Container, Table, Button} from 'react-bootstrap'
+import { LinkContainer } from 'react-router-bootstrap'
+import { useNavigate } from 'react-router-dom'
 
 import ProfileHeader from '../components/ProfileHeader'
 import Loader from '../components/Loader'

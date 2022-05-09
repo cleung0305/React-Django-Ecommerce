@@ -19,7 +19,7 @@ class MyTokenObtainPairView(TokenObtainPairView): #Customize JWT token View
     serializer_class = MyTokenObtainPairSerializer #Initialize the Token serializer
 
 @api_view(['POST'])
-def registerUser(request):
+def registerUser(request) -> Response:
     data = request.data
     try:
         user = User.objects.create(
@@ -37,7 +37,7 @@ def registerUser(request):
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
-def updateUserProfile(request): # Checkout your user profile
+def updateUserProfile(request) -> Response: # Checkout your user profile
     user = request.user
     serializer = UserSerializerWithToken(user, many=False)
 
@@ -54,14 +54,25 @@ def updateUserProfile(request): # Checkout your user profile
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
-def getUserProfile(request): # Checkout your user profile
+def getUserProfile(request) -> Response: # Checkout your user profile
     user = request.user
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
-def getUsers(request): # get all users in the database
+def getUsers(request) -> Response: # get all users in the database
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteUser(request, pk) -> Response:
+    userToDelete = User.objects.get(id=pk)
+    if userToDelete.is_staff:
+        message = {'detail': 'You cannot delete an admin user'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        userToDelete.delete()
+        return Response('User is deleted')

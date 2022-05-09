@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Form, Button, Row, Col, FormControl, Container } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom'
+import { Form, Button, Row, Col, Container } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 
 import ProfileHeader from '../components/ProfileHeader'

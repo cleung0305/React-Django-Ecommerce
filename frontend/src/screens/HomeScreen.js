@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo} from 'react'
+import React, {useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Row, Col } from 'react-bootstrap'
 
@@ -38,7 +38,7 @@ function HomeScreen() {
                     :
                     <Row>
                         {/* On first page load, productsOnPage is not loaded, so use products.slice(0, PageSize) to get first page of items  */}
-                        {(productsOnPage.length == 0 ? products.slice(0, PageSize) : productsOnPage).map(product => (
+                        {(productsOnPage.length === 0 ? products.slice(0, PageSize) : productsOnPage).map(product => (
                             <Col key={ product._id } xs='auto' sm='auto' md={4} lg={4} xl={3}>
                                 <Product product={product} />
                             </Col>
