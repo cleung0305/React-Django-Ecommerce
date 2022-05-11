@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import { 
     USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT,
+    USER_GOOGLE_LOGIN_REQUEST, USER_GOOGLE_LOGIN_SUCCESS, USER_GOOGLE_LOGIN_FAIL, USER_GOOGLE_LOGOUT,
     USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL,
     USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_RESET,
     USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL,
@@ -37,6 +38,36 @@ export const loginUser = (email, password) => async (dispatch) => {
     }catch(error){
         dispatch({
             type: USER_LOGIN_FAIL,
+            payload: error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+        })
+    }
+}
+
+// Google Login //
+export const googleLoginUser = (accesstoken) => async (dispatch) => {
+    try{
+        dispatch({type: USER_GOOGLE_LOGIN_REQUEST})
+
+        const config = {
+            headers:{
+                'Content-type':'application/json'
+            }
+        }
+        
+        const { data } = await axios.post("http://127.0.0.1:8000/api/users/google/", { 'access_token': accesstoken }, config)
+
+        dispatch({
+            type:USER_GOOGLE_LOGIN_SUCCESS,
+            payload: data
+        })
+
+        localStorage.setItem('userInfo', JSON.stringify(data))
+
+    }catch(error){
+        dispatch({
+            type: USER_GOOGLE_LOGIN_FAIL,
             payload: error.response && error.response.data.detail
                     ? error.response.data.detail
                     : error.message,

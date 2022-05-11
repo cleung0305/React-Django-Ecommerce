@@ -13,7 +13,24 @@ from base.serializers import UserSerializer, UserSerializerWithToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from base.serializers import MyTokenObtainPairSerializer
 
+#Google Login imports
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from allauth.socialaccount.providers.oauth2.client import OAuth2Client
+from dj_rest_auth.registration.serializers import SocialLoginSerializer
+from dj_rest_auth.registration.views import SocialLoginView
+
 # Create your views here.
+
+#Google Login view
+class GoogleLogin(SocialLoginView):
+    adapter_class = GoogleOAuth2Adapter
+    client_class = OAuth2Client
+    serializer_class = SocialLoginSerializer
+
+    def get_serializer(self, *args, **kwargs):
+        serializer_class = self.get_serializer_class()
+        kwargs['context'] = self.get_serializer_context()
+        return serializer_class(*args, **kwargs)
 
 class MyTokenObtainPairView(TokenObtainPairView): #Customize JWT token View
     serializer_class = MyTokenObtainPairSerializer #Initialize the Token serializer
