@@ -60,6 +60,7 @@ function PlaceOrderScreen() {
         } else {
             setSdkReady(true)
         }
+        console.log(window.paypal)
     }, [success, successPay, navigate])
 
     const placeOrderHandler = () => {

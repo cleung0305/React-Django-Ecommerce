@@ -1,13 +1,16 @@
 import axios from 'axios'
 
 import { 
+    //Regular user
     USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT,
-    USER_GOOGLE_LOGIN_REQUEST, USER_GOOGLE_LOGIN_SUCCESS, USER_GOOGLE_LOGIN_FAIL, USER_GOOGLE_LOGOUT,
     USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS, USER_REGISTER_FAIL,
     USER_DETAILS_REQUEST, USER_DETAILS_SUCCESS, USER_DETAILS_FAIL, USER_DETAILS_RESET,
     USER_UPDATE_PROFILE_REQUEST, USER_UPDATE_PROFILE_SUCCESS, USER_UPDATE_PROFILE_FAIL,
+
+    //Admin user
     USER_LIST_REQUEST, USER_LIST_SUCCESS, USER_LIST_FAIL, USER_LIST_RESET,
     USER_DELETE_REQUEST, USER_DELETE_SUCCESS, USER_DELETE_FAIL,
+    USER_UPDATE_REQUEST, USER_UPDATE_SUCCESS, USER_UPDATE_FAIL, USER_UPDATE_RESET
 } from '../constants/userConstants'
 
 import { ORDER_LIST_MY_RESET } from '../constants/orderConstants'
@@ -38,36 +41,6 @@ export const loginUser = (email, password) => async (dispatch) => {
     }catch(error){
         dispatch({
             type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.detail
-                    ? error.response.data.detail
-                    : error.message,
-        })
-    }
-}
-
-// Google Login //
-export const googleLoginUser = (accesstoken) => async (dispatch) => {
-    try{
-        dispatch({type: USER_GOOGLE_LOGIN_REQUEST})
-
-        const config = {
-            headers:{
-                'Content-type':'application/json'
-            }
-        }
-        
-        const { data } = await axios.post("http://127.0.0.1:8000/api/users/google/", { 'access_token': accesstoken }, config)
-
-        dispatch({
-            type:USER_GOOGLE_LOGIN_SUCCESS,
-            payload: data
-        })
-
-        localStorage.setItem('userInfo', JSON.stringify(data))
-
-    }catch(error){
-        dispatch({
-            type: USER_GOOGLE_LOGIN_FAIL,
             payload: error.response && error.response.data.detail
                     ? error.response.data.detail
                     : error.message,
@@ -127,7 +100,7 @@ export const registerUser = (name, email, password) => async (dispatch) => {
 }
 
 // Details //
-export const getUserDetails = (info) => async (dispatch, getState) => {
+export const getUserDetails = (userId) => async (dispatch, getState) => {
     try{
         dispatch({type: USER_DETAILS_REQUEST})
 
@@ -140,7 +113,7 @@ export const getUserDetails = (info) => async (dispatch, getState) => {
             }
         }
 
-        const { data } = await axios.get(`/api/users/${info}`, config)
+        const { data } = await axios.get(`/api/users/profile/${userId}`, config)
 
         dispatch({
             type:USER_DETAILS_SUCCESS,
@@ -249,6 +222,35 @@ export const deleteUser = (id) => async (dispatch, getState) => {
     }catch(error) {
         dispatch({
             type: USER_DELETE_FAIL,
+            payload: error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+        })
+    }
+}
+
+export const updateUser = (user, id) => async(dispatch, getState) => {
+    try{
+        dispatch({type: USER_UPDATE_REQUEST})
+
+        const { userLogin: {userInfo} } = getState()
+
+        const config = {
+            headers: {
+                'Content-type':'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        const { data } = await axios.put(`/api/users/admin/update-user/${id}/`, user, config) //send in 'user' as request.data
+
+        dispatch({
+            type: USER_UPDATE_SUCCESS
+        })
+
+    }catch(error) {
+        dispatch({
+            type: USER_UPDATE_FAIL,
             payload: error.response && error.response.data.detail
                     ? error.response.data.detail
                     : error.message,

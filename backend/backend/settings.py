@@ -208,11 +208,13 @@ SITE_ID = 1
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
-            "client_id": "37032365283-ibrd58askqgeo9bv1n7usguj4s9rv099.apps.googleusercontent.com",
-            "secret": "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",
+            "client_id": "37032365283-sppkbus0daiho5kjkcc8oe7mpravd4m4.apps.googleusercontent.com",
+            "secret": "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",
         },
         'AUTH_PARAMS': {
-            'access_type': 'offline',
+            'access_type': 'online',
         }
     }
 }
+
+GOOGLE_AUTH_CLIENT_ID = "37032365283-sppkbus0daiho5kjkcc8oe7mpravd4m4.apps.googleusercontent.com"

@@ -4,15 +4,14 @@ import axios from "axios";
  * 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
  * This is the accesstoken of the user obtained from Google
  */
-const googleLogin = async (accesstoken) => {
-    const res = await axios.post(
-      "http://127.0.0.1:8000/dj-rest-auth/google/",
-      {
-        access_token: accesstoken,
-      }
-    );
-    console.log(res);
-    return await res.status;
-  };
+const googleLogin = async ({ data, access_token }) => {
+    const headers = {
+        Authorization: access_token,
+        'Content-Type': 'application/json'
+    }
+
+    const res = await axios.post("http://127.0.0.1:8000/api/users/google/", data, { headers })
+    return await res.data
+  }
 
 export default googleLogin;

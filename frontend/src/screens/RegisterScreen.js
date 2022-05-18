@@ -45,8 +45,8 @@ function RegisterScreen() {
     return (
         <FormContainer md={6}>
             <h2>Register</h2>
-            {message && <Message variant="danger">{message}</Message>}
-            {error && <Message variant="danger">{error}</Message>}
+            {message && <Message variant="danger" fade={ true }>{message}</Message>}
+            {error && <Message variant="danger" fade={ true }>{error}</Message>}
             {loading && <Loader />}
             <Form onSubmit={submitRegisterHandler}>
                 <Form.Group className="my-2" controlid="password">

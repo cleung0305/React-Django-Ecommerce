@@ -9,7 +9,7 @@ function Message({ variant, children, fade=false }) {
         if(fade){
             setTimeout(() => {
                 setShowingAlert(false)
-              }, 4000);
+              }, 3000);
         }
     }, [])
 

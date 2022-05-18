@@ -35,10 +35,10 @@ function ProfileScreen() {
         if (!userInfo){
             navigate("/login?redirect=profile")
         }else {
-            if (!user || !user.name || success) {
+            if (!user || !user.name || user._id !== userInfo._id || success) {
                 if(success) { setMessageSuccess('Your profile has been updated') }
                 dispatch({ type: USER_UPDATE_PROFILE_RESET })
-                dispatch(getUserDetails('profile'))
+                dispatch(getUserDetails(userInfo._id))
             } else{
                 setName(user.name)
                 setEmail(user.email)
