@@ -205,16 +205,5 @@ AUTHENTICATION_BACKENDS = ('base.custombackends.EmailBackend',)
 
 #Google Auth settings
 SITE_ID = 1
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "APP": {
-            "client_id": "37032365283-sppkbus0daiho5kjkcc8oe7mpravd4m4.apps.googleusercontent.com",
-            "secret": "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",
-        },
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    }
-}
 
 GOOGLE_AUTH_CLIENT_ID = "37032365283-sppkbus0daiho5kjkcc8oe7mpravd4m4.apps.googleusercontent.com"
