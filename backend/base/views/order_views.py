@@ -57,12 +57,17 @@ def addOrderItems(request):
                 image=product.image.url,
             )
 
-            product.countInStock -= orderItem.qty
-            product.save()
-
         order.save()
         serializer = OrderSerializer(order, many=False)
         return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getMyOrders(request):
+    user = request.user
+    orders = user.order_set.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -85,6 +90,11 @@ def getOrderById(request, pk):
 @permission_classes([IsAuthenticated])
 def updateOrderToPaid(request, pk):
     order = Order.objects.get(_id=pk)
+    orderItems = order.orderitem_set.all()
+    for orderItem in orderItems:
+        product = Product.objects.get(_id=orderItem.product._id)
+        product.countInStock -= orderItem.qty
+        product.save()
 
     order.isPaid = True
     order.paid_date = datetime.now()

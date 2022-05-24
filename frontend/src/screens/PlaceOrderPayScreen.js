@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { Row, Col, Button, ListGroup, Image } from 'react-bootstrap'
+import { Row, Col, ListGroup, Image } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import { PayPalButton } from 'react-paypal-button-v2'
 
+import Loader from '../components/Loader'
 import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 import CartSummaryAccordion from '../components/CartSummaryAccordion'
-import { createOrder } from '../actions/orderActions'
+import { createOrder, payOrder } from '../actions/orderActions'
 import { ORDER_CREATE_RESET } from '../constants/orderConstants'
 
 function PlaceOrderScreen() {
@@ -14,18 +16,27 @@ function PlaceOrderScreen() {
     const orderCreate = useSelector(state => state.orderCreate)
     const { order, success, error } = orderCreate
 
+    const orderPay = useSelector(state => state.orderPay)
+    const { loading: loadingPay, success: successPay} = orderPay
+
     const cart = useSelector(state => state.cart)
     const { cartItems, shippingAddress, paymentMethod, subtotalPrice, shippingPrice, taxPrice, totalPrice } = cart
 
     const user = useSelector(state => state.userLogin)
     const { userInfo } = user
 
-    // cart.subtotalPrice = cartItems.reduce((acc, cartItem) => acc + cartItem.price * cartItem.qty, 0).toFixed(2)
-    // cart.shippingPrice = Number(cart.subtotalPrice >= 100 ? 0 : 10).toFixed(2)
-    // cart.taxPrice = Number((0.082) * cart.subtotalPrice).toFixed(2)
-    // cart.totalPrice = (Number(cart.subtotalPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2)
+    const [sdkReady, setSdkReady] = useState(false) // State determine whether the SDK is ready to be mounted
 
-    // AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P
+    const addPayPalScript = () => {
+        const script = document.createElement('script')
+        script.type = 'text/javascript'
+        script.src = 'https://www.paypal.com/sdk/js?client-id=AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P'
+        script.async = true //give it time for SDK to load
+        script.onload = () => {
+            setSdkReady(true)
+        }
+        document.body.appendChild(script)
+    }
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -39,14 +50,21 @@ function PlaceOrderScreen() {
             navigate('/payment')
         }
 
-        if(success) {
+        if(success && successPay) {
             navigate(`/orders/${order._id}`)
             dispatch({ type: ORDER_CREATE_RESET }) //clear the order state
         }
-    }, [success, navigate])
+
+        if(!window.paypal){
+            addPayPalScript() //check if paypal sdk is mounted to page
+        } else {
+            setSdkReady(true)
+        }
+        console.log(window.paypal)
+    }, [success, successPay, navigate])
 
     const placeOrderHandler = () => {
-        const order = {
+        const orderToCreate = {
             orderItems: cartItems,
             shippingAddress: shippingAddress,
             paymentMethod: paymentMethod,
@@ -55,7 +73,11 @@ function PlaceOrderScreen() {
             taxPrice: taxPrice,
             totalPrice: totalPrice,
         }
-        dispatch(createOrder(order))
+        dispatch(createOrder(orderToCreate))
+    }
+
+    const successPaymentHandler = (paymentResult) => {
+        dispatch(payOrder(order._id, paymentResult))
     }
 
     return (
@@ -129,17 +151,17 @@ function PlaceOrderScreen() {
 
                 <Col md={4}>
                     <CartSummaryAccordion items={cartItems} shippingPrice={shippingPrice} taxPrice={taxPrice} />
-                    <ListGroup variant="flush">
-                        <ListGroup.Item>
-                            { error && <Message variant="danger">{error}</Message> }
-                        </ListGroup.Item>
+                    { error && <Message variant="danger">{error}</Message> }
+                    { paymentMethod === 'PayPal' ?
+                        <div>
+                            {loadingPay && <Loader />}
 
-                        <ListGroup.Item>
-                            <div className="d-grid gap-2 my-1">
-                                <Button type="button" size="lg" variant="primary" disabled={cartItems.length === 0} onClick={placeOrderHandler}>Place order</Button>
-                            </div>
-                        </ListGroup.Item>
-                    </ListGroup>
+                            {!sdkReady ? (<Loader />)
+                                    : (<PayPalButton amount={totalPrice} onClick={placeOrderHandler} onSuccess={successPaymentHandler} />)
+                            }
+                        </div>
+                        : <Message variant="danger">Sorry, we currently only accept PayPal payments</Message>
+                    }
                 </Col>
             </Row>
         </div>

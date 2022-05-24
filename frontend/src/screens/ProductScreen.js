@@ -33,23 +33,23 @@ function ProductScreen() {
 
     return (
         <div>
-          {/* Breadcrumb */}
-          <section id="bc" className="my-3">
-            <div>
-              <nav>
-                <ol className="breadcrumb">
-                  <li className="breadcrumb-item">
-                    <Link to="/">Home</Link>
-                  </li>
-                  <li className="breadcrumb-item active">
-                    { 
-                        product.name 
-                    }
-                  </li>
-                </ol>
-              </nav>
-            </div>
-          </section>
+            {/* Breadcrumb */}
+            <section id="bc" className="my-3">
+                <div>
+                    <nav>
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                <Link to="/">Home</Link>
+                            </li>
+                            <li className="breadcrumb-item active">
+                                { 
+                                    product.name 
+                                }
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </section>
             
             {/* Message section for adding item to cart */}
             {

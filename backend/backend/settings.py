@@ -40,9 +40,20 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
+    'dj_rest_auth',
+    'rest_auth',
     "corsheaders",
 
     'base.apps.BaseConfig',
+
+    #For Google Login
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'rest_auth.registration',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 
@@ -185,9 +196,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Config
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3000","http://localhost", "http://127.0.0.1:8000"
 ]
 # CORS_ALLOW_ALL_ORIGINS = True
 
 # Custom Backend Authentication, allow users to login using email
 AUTHENTICATION_BACKENDS = ('base.custombackends.EmailBackend',)
+
+#Google Auth settings
+SITE_ID = 1
+
+GOOGLE_AUTH_CLIENT_ID = "37032365283-sppkbus0daiho5kjkcc8oe7mpravd4m4.apps.googleusercontent.com"

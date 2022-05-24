@@ -26,7 +26,7 @@ function Header() {
 
     return (
         <header>
-           <Navbar className='bg-primary navbar-dark' expand="lg" collapseOnSelect>
+           <Navbar bg="primary" variant="dark" expand="lg" collapseOnSelect>
             <Container>
                 <LinkContainer to="/">
                     <Navbar.Brand>LokiTech</Navbar.Brand>
@@ -42,7 +42,7 @@ function Header() {
                     {
                         userInfo ? 
                             (
-                                <NavDropdown title={userInfo.name} id="username">
+                                <NavDropdown title={userInfo.name} id="username" menuVariant="dark">
                                     <LinkContainer to="/profile">
                                         <NavDropdown.Item className="mt-1 p-2"><i className='fas fa-user'></i> Profile</NavDropdown.Item>
                                     </LinkContainer>
@@ -68,6 +68,23 @@ function Header() {
                                     </LinkContainer>
                                 </>
                             )
+                    }
+                    {
+                        userInfo && userInfo.isAdmin && (
+                            <NavDropdown title='Admin' id="adminmenu" menuVariant="dark">
+                                <LinkContainer to="/admin/all-users">
+                                    <NavDropdown.Item className="mt-1 p-2"><i className='fas fa-users'></i> Users</NavDropdown.Item>
+                                </LinkContainer>
+
+                                <LinkContainer to="/admin/all-products">
+                                    <NavDropdown.Item className="mt-1 p-2"><i className='fas fa-list-ul'></i> Products</NavDropdown.Item>
+                                </LinkContainer>
+
+                                <LinkContainer to="/admin/all-orders">
+                                    <NavDropdown.Item className="mt-1 p-2"><i className='fa-solid fa-clipboard'></i> Orders</NavDropdown.Item>
+                                </LinkContainer>
+                            </NavDropdown>
+                        )
                     }
                 </Nav>
                 </Navbar.Collapse>

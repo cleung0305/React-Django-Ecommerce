@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name='Employee')
     name = models.CharField(max_length=200, null=True, blank=True)
-    image = models.ImageField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True, default='/placeholder.png')
     brand = models.CharField(max_length=200, null=True, blank=True)
     category = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
@@ -31,6 +32,14 @@ class Review(models.Model):
     def __str__(self):
         return self.product
 
+#Order Manager
+class OrderManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().exclude(
+            created_date__lte=timezone.now()-timezone.timedelta(days=14),
+            isPaid=False
+        )
+
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
@@ -44,6 +53,7 @@ class Order(models.Model):
     deliverd_date = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True, editable=False)
+    objects = OrderManager()
 
     def __str__(self):
         return f'${self.user.username} created at ${self.created_date}'

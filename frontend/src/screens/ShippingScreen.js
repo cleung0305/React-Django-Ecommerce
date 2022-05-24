@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -25,9 +25,7 @@ function ShippingScreen() {
     const [state, setState] = useState(shippingAddress.state)
     const [zip, setZip] = useState(shippingAddress.zip)
 
-    const location = useLocation()
     const navigate = useNavigate()
-
     const dispatch = useDispatch()
 
     useEffect(() => {

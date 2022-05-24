@@ -13,11 +13,18 @@ import ProfileScreen from './screens/ProfileScreen'
 import ProfileOrdersScreen from './screens/ProfileOrdersScreen'
 
 import ProductScreen from './screens/ProductScreen'
+import ProductListScreen from './screens/ProductListScreen'
+import ProductEditScreen from './screens/ProductEditScreen';
+
 import CartScreen from './screens/CartScreen'
 import ShippingScreen from './screens/ShippingScreen'
 import PaymentScreen from './screens/PaymentScreen'
 import PlaceOrderScreen from './screens/PlaceOrderScreen'
+import PlaceOrderPayScreen from './screens/PlaceOrderPayScreen'
 import OrderScreen from './screens/OrderScreen'
+
+import UserListScreen from './screens/UserListScreen';
+import UserEditScreen from './screens/UserEditScreen';
 
 function App() {
   return (
@@ -37,12 +44,20 @@ function App() {
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/profile/orders" element={<ProfileOrdersScreen />} />
 
+            {/* Admin */}
+            <Route path="/admin/all-users" element={<UserListScreen />} />
+            <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
+            <Route path="/admin/all-products" element={<ProductListScreen />} />
+            <Route path="/admin/product/:id/edit" element={<ProductEditScreen />} />
+            {/* <Route path="/admin/product/:id/edit" element={<UserEditScreen />} /> */}
+
             {/* Products  */}
             <Route path='/product/:id' element={<ProductScreen />} />
             <Route path="/cart" element={<CartScreen />} />
             <Route path="/shipping" element={<ShippingScreen />} />
             <Route path="/payment" element={<PaymentScreen />} />
-            <Route path="/placeorder" element={<PlaceOrderScreen />} />
+            {/* <Route path="/placeorder" element={<PlaceOrderScreen />} /> */}
+            <Route path="/placeorder" element={<PlaceOrderPayScreen />} />
             <Route path='/orders/:id' element={<OrderScreen />} />
             {/* <Route path="/cart/:productId" element={<CartScreen />} /> */}
           </Routes>

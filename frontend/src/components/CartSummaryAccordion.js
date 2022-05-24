@@ -1,5 +1,4 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { Row, Col, Accordion, ListGroup } from 'react-bootstrap'
 
 function CartSummaryAccordion({items, subtotalPrice, shippingPrice, taxPrice, totalPrice}) {

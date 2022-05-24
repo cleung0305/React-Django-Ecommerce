@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams, Link } from 'react-router-dom'
-import { Row, Col, Button, ListGroup, Image } from 'react-bootstrap'
+import { useParams } from 'react-router-dom'
+import { Row, Col, ListGroup, Image } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 import { PayPalButton } from 'react-paypal-button-v2'
 
@@ -12,13 +12,9 @@ import { ORDER_PAY_RESET } from '../constants/orderConstants'
 
 function OrderScreen() {
     const { id } = useParams()
-    console.log(id)
 
     const orderDetails = useSelector(state => state.orderDetails)
     const { order, loading, error } = orderDetails
-
-    const user = useSelector(state => state.userLogin)
-    const { userInfo } = user
 
     const orderPay = useSelector(state => state.orderPay)
     const { loading: loadingPay, success: successPay} = orderPay
@@ -28,8 +24,6 @@ function OrderScreen() {
     }
 
     const dispatch = useDispatch()
-    const navigate = useNavigate()
-    // AVOAq7MSKF4C3MOjpav8qqlDV7k0FBiTeW7hOvOa7WCXJUdjLAkwZslUaT9pcgwquy46tDE66CoXy76P
 
     const [sdkReady, setSdkReady] = useState(false) // State determine whether the SDK is ready to be mounted
 
@@ -72,24 +66,6 @@ function OrderScreen() {
                        <h2>Order # { order._id }</h2>
                         <Col md={8}>
                             <ListGroup variant="flush">
-                                {/* <ListGroup.Item>
-                                    <h3>Order Status</h3>
-                                    <Row>
-                                        <Col md={2}><strong>Transaction:</strong></Col>
-                                        <Col md={4} className="d-flex">
-                                            <div className="ms-auto">
-                                                { order.isPaid ? "Completed" : "Incomplete"}
-
-                                            </div>
-                                        </Col>
-                                        <Col md={2}><strong>Delivery:</strong></Col>
-                                        <Col md={4} className="d-flex">
-                                            <div className="ms-auto">
-                                                { order.isDelivered ? "Delivered" : "In Progress"}
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                </ListGroup.Item> */}
                                 <ListGroup.Item>
                                     <h3>Shipping</h3>
                                     <Row>

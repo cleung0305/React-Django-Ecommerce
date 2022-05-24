@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Row, Col, Form, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 
-import Message from '../components/Message'
 import CheckoutSteps from '../components/CheckoutSteps'
 import CartSummaryAccordion from '../components/CartSummaryAccordion'
 
@@ -19,7 +18,6 @@ function PaymentScreen() {
     const user = useSelector( state => state.userLogin) //user info
     const { userInfo } = user
 
-    const location = useLocation()
     const navigate = useNavigate()
 
     const dispatch = useDispatch()

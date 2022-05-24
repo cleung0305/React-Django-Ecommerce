@@ -11,7 +11,7 @@ from base.serializers import ProductSerializer
 
 @api_view(['GET'])
 def getProducts(request): # get all products
-    products = Product.objects.filter(isPublished=True)
+    products = Product.objects.filter(isPublished=True).order_by('-created_at')
     serializer = ProductSerializer(products, many=True)
     return Response(serializer.data)
 
@@ -20,3 +20,62 @@ def getProduct(request, pk): # get single product
     product = Product.objects.get(_id=pk)
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getProductList(request): # get product list admin page
+    products = Product.objects.all()
+    serializer = ProductSerializer(products, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def createProduct(request):
+    user = request.user
+    product = Product.objects.create(
+        user=user,
+        name='Sample',
+        brand='Sample',
+        category='Sample',
+        description='Sample',
+        price=0,
+        countInStock=0,
+        isPublished=False
+    )
+    serializer = ProductSerializer(product, many=False)
+    return Response(serializer.data)
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def updateProduct(request, pk):
+    try:
+        product = Product.objects.get(_id=pk)
+        data = request.data
+
+        product.name = data['name']
+        product.brand = data['brand']
+        product.category = data['category']
+        product.description = data['description']
+        product.price = data['price']
+        product.countInStock = data['countInStock']
+        product.isPublished = data['isPublished']
+
+        product.save()
+
+        serializer = ProductSerializer(product, many=False)
+        return Response(serializer.data)
+    except Product.DoesNotExist:
+        message = {'detail': 'Product with this ID does not exist'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteProduct(request, pk) -> Response:
+    try:
+        productToDelete = Product.objects.get(_id=pk)
+        productName = productToDelete.name
+        productToDelete.delete()
+        return Response(f'Product {productName} has been deleted')
+    except Product.DoesNotExist:
+        message = {'detail': 'Product with this ID does not exist'}
+        return Response(message, status=status.HTTP_404_NOT_FOUND)
