@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react'
+import React, {useState, useEffect} from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
@@ -62,7 +62,7 @@ function LoginScreen() {
         <>
             <FormContainer md={6}>
                 <h2>Sign In</h2>
-                {error && <Message variant="danger" fade={ true }>{error}</Message>}
+                {error && <Message variant="danger" fade>{error}</Message>}
                 {loading && <Loader />}
 
                 <Form onSubmit={submitLoginHandler} controlId="email">

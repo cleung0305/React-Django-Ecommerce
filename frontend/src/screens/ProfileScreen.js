@@ -70,13 +70,14 @@ function ProfileScreen() {
                         {error && <Message variant="danger">{error}</Message>}
                         {loading && <Loader />}
                         <Form onSubmit={submitUpdateHandler}>
-                            <Form.Group className="my-2" controlId="password">
+                            <Form.Group className="my-2" controlId="email">
+                                <Form.Label>Username / Email</Form.Label>
+                                <Form.Control type="email" value={email} plaintext readOnly required />
+                            </Form.Group>
+
+                            <Form.Group className="my-2" controlId="name">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control type="name" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} required />
-                            </Form.Group>
-                            <Form.Group className="my-2" controlId="password">
-                                <Form.Label>Email address</Form.Label>
-                                <Form.Control type="email" placeholder="Username / Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                             </Form.Group>
 
                             <Form.Group className="my-2" controlId="password">

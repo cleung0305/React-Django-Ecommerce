@@ -17,18 +17,17 @@ function UserListScreen() {
     const { userInfo } = userLogin
 
     const userDelete = useSelector(state => state.userDelete)
-    const { success:successDelete, error:errorDelete } = userDelete
+    const { success:successDelete, error:errorDelete, message:messageDelete } = userDelete
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
     useEffect(() => {
         if(userInfo){
-            if(userInfo.isAdmin){
-                dispatch(getUserList())
-            } else{
+            if(!userInfo.isAdmin){
                 navigate('/')
             }
+            dispatch(getUserList())
         } else{
             navigate('/login?redirect=admin/all-users')
         }
@@ -43,7 +42,8 @@ function UserListScreen() {
         <div>
             <h2>Users</h2>
             { error && <Message variant="danger">{error}</Message>}
-            { errorDelete && <Message variant="danger" fade={true}>{errorDelete}</Message>}
+            { errorDelete && <Message variant="danger" fade>{errorDelete}</Message>}
+            { messageDelete && <Message variant="primary" fade>{messageDelete}</Message>}
             { loading && <Loader /> }
             { users && 
                 (

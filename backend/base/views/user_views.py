@@ -110,7 +110,6 @@ def updateUser(request, pk) -> Response: # update a user profile by ID
     user.save()
 
     serializer = UserSerializer(user, many=False)
-    
     return Response(serializer.data)
 
 
@@ -122,5 +121,6 @@ def deleteUser(request, pk) -> Response:
         message = {'detail': 'You cannot delete an admin user directly'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
     else:
+        userName = userToDelete.first_name
         userToDelete.delete()
-        return Response('User is deleted')
+        return Response(f'User {userName} has been deleted')

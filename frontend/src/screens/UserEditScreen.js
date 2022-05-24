@@ -7,7 +7,7 @@ import Loader from '../components/Loader'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
 import { getUserDetails, updateUser } from '../actions/userActions'
-import { USER_UPDATE_RESET } from '../constants/userConstants'
+import { USER_UPDATE_RESET, USER_DETAILS_RESET } from '../constants/userConstants'
 
 function UserEditScreen() {
 
@@ -34,6 +34,7 @@ function UserEditScreen() {
             if(userInfo.isAdmin){
                 if(successUpdate){
                     dispatch({ type: USER_UPDATE_RESET })
+                    dispatch({ type: USER_DETAILS_RESET })
                     navigate('/admin/all-users')
                 }else{
                     if(!user || user._id !== Number(userId)){
@@ -77,18 +78,19 @@ function UserEditScreen() {
             <FormContainer md={6}>
                 <h2>Edit User</h2>
                 {loading && <Loader />}
-                {errorUpdate && <Message variant="danger" fade={ true }>{ errorUpdate }</Message>}
+                {errorUpdate && <Message variant="danger" fade>{ errorUpdate }</Message>}
                 {
                     error ? <Message variant="danger">{error}</Message>
                         :
                         <Form onSubmit={submitUpdateHandler}>
-                            <Form.Group className="my-2" controlid="password">
+                            <Form.Group className="my-2" controlid="email">
+                                <Form.Label>Username / Email</Form.Label>
+                                <Form.Control type="email" value={email} plaintext readOnly />
+                            </Form.Group>
+
+                            <Form.Group className="my-2" controlid="name">
                                 <Form.Label>Name</Form.Label>
                                 <Form.Control type="name" placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
-                            </Form.Group>
-                            <Form.Group className="my-2" controlid="password">
-                                <Form.Label>Email address</Form.Label>
-                                <Form.Control type="email" placeholder="Username / Email" value={email} onChange={(e) => setEmail(e.target.value)} />
                             </Form.Group>
         
                             <Form.Group className="my-2" controlid="isAdmin">

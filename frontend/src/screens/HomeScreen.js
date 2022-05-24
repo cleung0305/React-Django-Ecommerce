@@ -9,7 +9,7 @@ import Pagination from '../components/Pagination'
 
 import { listProducts } from '../actions/productActions'
 
-const PageSize = 4 // Items to be shown on one page
+// const PageSize = 2 // Items to be shown on one page
 
 function HomeScreen() {
     const dispatch = useDispatch()
@@ -18,16 +18,21 @@ function HomeScreen() {
 
     const [productsOnPage, setProductsOnPage] = useState([])
     const [currentPage, setCurrentPage] = useState(1)
+    const [pageSize, setPageSize] = useState(4)
+
+    const getProductsOnPage = (products) =>{
+        const firstItemIndex = (currentPage - 1) * pageSize
+        const lastItemIndex = firstItemIndex + pageSize
+        return (products.slice(firstItemIndex, lastItemIndex))
+    }
 
     useEffect(() => {
-        dispatch(listProducts())
-        if(products){
-            setProductsOnPage(products.slice(0, PageSize))
-            const firstItemIndex = (currentPage - 1) * PageSize
-            const lastItemIndex = firstItemIndex + PageSize
-            setProductsOnPage(products.slice(firstItemIndex, lastItemIndex))
+        if(products.length === 0){
+            dispatch(listProducts())
+        }else{
+            setProductsOnPage(getProductsOnPage(products))
         }
-    }, [dispatch, currentPage])
+    }, [currentPage, dispatch, pageSize])
 
     return (
         <div>
@@ -37,8 +42,8 @@ function HomeScreen() {
                 : error ? <Message variant="danger">{ error }</Message> 
                     :
                     <Row>
-                        {/* On first page load, productsOnPage is not loaded, so use products.slice(0, PageSize) to get first page of items  */}
-                        {(productsOnPage.length === 0 ? products.slice(0, PageSize) : productsOnPage).map(product => (
+                        {/* On first page load, productsOnPage is not loaded, so use products.slice(0, pageSize) to get first page of items  */}
+                        {(productsOnPage.length === 0 ? products.slice(0, pageSize) : productsOnPage).map(product => (
                             <Col key={ product._id } xs='auto' sm='auto' md={4} lg={4} xl={3}>
                                 <Product product={product} />
                             </Col>
@@ -47,7 +52,7 @@ function HomeScreen() {
             }
 
             { products && 
-                <Pagination className="pagination-bar" currentPage={currentPage} totalCount={products.length} pageSize={PageSize} onPageChange={page => setCurrentPage(page)} />
+                <Pagination className="pagination-bar" currentPage={currentPage} totalCount={products.length} pageSize={pageSize} onPageChange={page => setCurrentPage(page)} />
             }
         </div>
     )
