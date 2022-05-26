@@ -95,7 +95,7 @@ function ProductListScreen() {
 
                         <tbody>
                             { products.map(product => (
-                                <tr>
+                                <tr key={product._id}>
                                     <td>{ String(product._id).padStart(5, '0') }</td>
                                     <td>{ product.name }</td>
                                     <td>{ product.brand }</td>

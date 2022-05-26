@@ -79,3 +79,15 @@ def deleteProduct(request, pk) -> Response:
     except Product.DoesNotExist:
         message = {'detail': 'Product with this ID does not exist'}
         return Response(message, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+@permission_classes([IsAdminUser])
+def uploadImage(request):
+    data = request.data
+
+    productId = data['productId']
+    product = Product.objects.get(_id=productId)
+
+    product.image = request.FILES.get('image')
+    product.save()
+    return Response('Image uploaded')

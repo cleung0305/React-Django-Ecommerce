@@ -8,6 +8,7 @@ from base.models import Product, Order, OrderItem, ShippingAddress
 from base.serializers import ProductSerializer, OrderSerializer
 
 from datetime import datetime
+from django.utils import timezone
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -65,7 +66,10 @@ def addOrderItems(request):
 @permission_classes([IsAuthenticated])
 def getMyOrders(request):
     user = request.user
-    orders = user.order_set.all()
+    orders = user.order_set.exclude( #show only paid orders, **Orders those aren't paid and older than 14days are excluded**
+        created_date__lte=timezone.now()-timezone.timedelta(days=14),
+        isPaid=False
+    )
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
@@ -100,3 +104,10 @@ def updateOrderToPaid(request, pk):
     order.paid_date = datetime.now()
     order.save()
     return Response('Order paid')
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def getOrders(request):
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)

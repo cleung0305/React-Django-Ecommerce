@@ -6,4 +6,6 @@ urlpatterns = [
     path('myorders/', views.getMyOrders, name="my-orders"),
     path('<str:pk>/', views.getOrderById, name="get-order"),
     path('<str:pk>/pay/', views.updateOrderToPaid, name="update-order-paid"),
+
+    path('admin/all-orders/', views.getOrders, name="get-all-orders"),
 ]

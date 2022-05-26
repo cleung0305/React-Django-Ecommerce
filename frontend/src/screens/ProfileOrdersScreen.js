@@ -55,9 +55,9 @@ function PastOrdersScreen() {
                                 <tbody>
                                     { orders.map(order => (
                                         <tr>
-                                            <td>{ String(order._id).padStart(10, '0') }</td>
+                                            <td>{ String(order._id).padStart(5, '0') }</td>
                                             <td>{ order.created_date.substr(0, 10) }</td>
-                                            <td>{ order.total_price }</td>
+                                            <td>${ order.total_price }</td>
                                             <td>{ order.isPaid ? order.paid_date.substr(0, 10) : ( <i className="fas fa-times" style={{ color:'red' }}></i> ) }</td>
                                             <td>{ order.isDelivered ? order.deliverd_date : 'In progress' }</td>
                                             <td>

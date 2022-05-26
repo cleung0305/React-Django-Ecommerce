@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { Form, Button } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
+import axios from 'axios'
 
 import Loader from '../components/Loader'
 import Message from '../components/Message'
@@ -21,6 +22,7 @@ function ProductEditScreen() {
     const [price, setPrice] = useState(0)
     const [countInStock, setCountInStock] = useState(0)
     const [isPublished, setIsPublished] = useState(false)
+    const [uploading, setUploading] = useState(false)
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -76,6 +78,33 @@ function ProductEditScreen() {
         dispatch(updateProduct(productToUpdate, product._id))
     }
 
+    const uploadFileHandler = async (e) => {
+        const file = e.target.files[0]
+        const formData = new FormData()
+
+        formData.append('image', file)
+        formData.append('productId', productId)
+
+        setUploading(true)
+
+        try{
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${userInfo.token}`
+                }
+            }
+
+            const {data} = await axios.post(`/api/products/admin/upload/`, formData, config)
+
+            setImage(data)
+            setUploading(false)
+
+        } catch(error){
+            setUploading(false)
+        }
+    }
+
     return (
         <div>
             {/* Breadcrumb */}
@@ -109,6 +138,10 @@ function ProductEditScreen() {
                             <Form.Group className="my-2" controlid="image">
                                 <Form.Label>Image</Form.Label>
                                 <Form.Control type="text" placeholder="Image" value={image} onChange={(e) => setImage(e.target.value)} />
+                                
+                                <Form.Control type='file' id='image-file' label='Choose File' custom onChange={uploadFileHandler}>
+                                </Form.Control>
+                                { uploading && <Loader /> }
                             </Form.Group>
 
                             <Form.Group className="my-2" controlid="brand">
@@ -140,7 +173,7 @@ function ProductEditScreen() {
                                 <Form.Check type="checkbox" label="Published" checked={ isPublished } onChange={(e) => setIsPublished(e.target.checked)} />
                             </Form.Group>
         
-                            { loadingUpdate ? <Loader />
+                            { loadingUpdate || uploading ? <Loader />
                                             : <Button type="submit" variant="primary" className="my-2">Update</Button> }
         
                         </Form>

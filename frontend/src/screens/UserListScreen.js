@@ -62,7 +62,7 @@ function UserListScreen() {
 
                         <tbody>
                             { users.map(user => (
-                                <tr>
+                                <tr key={user._id}>
                                     <td>{ String(user._id).padStart(5, '0') }</td>
                                     <td>{ user.username }</td>
                                     <td>{ user.email }</td>

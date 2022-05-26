@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
+# from django.utils import timezone
 
 # Create your models here.
 class Product(models.Model):
@@ -33,12 +33,12 @@ class Review(models.Model):
         return self.product
 
 #Order Manager
-class OrderManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().exclude(
-            created_date__lte=timezone.now()-timezone.timedelta(days=14),
-            isPaid=False
-        )
+# class OrderManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().exclude(
+#             created_date__lte=timezone.now()-timezone.timedelta(days=14),
+#             isPaid=False
+#         )
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -53,7 +53,7 @@ class Order(models.Model):
     deliverd_date = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True, editable=False)
-    objects = OrderManager()
+    #objects = OrderManager()
 
     def __str__(self):
         return f'${self.user.username} created at ${self.created_date}'
