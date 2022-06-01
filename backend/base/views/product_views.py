@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework import status
 
-from base.models import Product, Order, OrderItem, Review, ShippingAddress
+from base.models import Product, Review
 from base.serializers import ProductSerializer
 
 # Create your views here.
@@ -91,3 +91,32 @@ def uploadImage(request):
     product.image = request.FILES.get('image')
     product.save()
     return Response('Image uploaded')
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def createProductReview(request, pk):
+    user = request.user
+    product = Product.objects.get(_id=pk)
+    data = request.data
+
+    # 1 User already wrote a review
+    if product.review_set.filter(user=user).exists():
+        message = {'detail': 'You have reviewed this product'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    # 2 User submitted a review w/o rating
+    elif data['rating'] == 0 or data['rating'] == None:
+        message = {'detail': 'Please provide a rating'}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
+    # 3 Submit Review
+    review = Review.objects.create(
+        user=user,
+        product=product,
+        name=user.first_name,
+        rating=data['rating'],
+        comment=data['comment']
+    )
+    # ---Rating change on Product is handled by signal---
+    
+    return Response('Review posted')

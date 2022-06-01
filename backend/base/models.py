@@ -19,7 +19,10 @@ class Product(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
+
+    def get_rating(self):
+        pass
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False)
@@ -30,7 +33,7 @@ class Review(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):
-        return self.product
+        return str(self.product)
 
 #Order Manager
 # class OrderManager(models.Manager):
