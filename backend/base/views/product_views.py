@@ -99,14 +99,14 @@ def createProductReview(request, pk):
     product = Product.objects.get(_id=pk)
     data = request.data
 
-    # 1 User already wrote a review
-    if product.review_set.filter(user=user).exists():
-        message = {'detail': 'You have reviewed this product'}
+    # 1 User submitted a review w/o rating
+    if data['rating'] == 0 or data['rating'] == None:
+        message = {'detail': 'Please provide a rating'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-    # 2 User submitted a review w/o rating
-    elif data['rating'] == 0 or data['rating'] == None:
-        message = {'detail': 'Please provide a rating'}
+    # 2 User already wrote a review
+    if product.review_set.filter(user=user).exists():
+        message = {'detail': 'You have already reviewed this product'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
     # 3 Submit Review

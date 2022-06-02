@@ -13,8 +13,7 @@ def updateReviewRating(sender, instance, **kwargs) -> None:
 
     instance.product.numReviews = len(reviews)
     instance.product.rating = sum(ratings) / len(reviews)
-    print(instance.product.rating)
-    print(instance.product.name)
+    
     instance.product.save()
 
 

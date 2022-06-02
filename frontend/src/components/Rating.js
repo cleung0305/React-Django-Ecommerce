@@ -8,9 +8,9 @@ function Rating({ value, text, color }) {
             {[...Array(5)].map((e, i) => (
                 <span>
                     <i style={{ color }} className={
-                        value >= (i+1) ? 'fas fa-star'
-                        : value >= (i+0.5) ? 'fas fa-star-half-alt'
-                        : 'far fa-star'
+                        value >= (i+1) ? 'bi bi-star-fill'
+                        : value >= (i+0.5) ? 'bi bi-star-half'
+                        : 'bi bi-star'
                     }>
                     </i>
                 </span>
