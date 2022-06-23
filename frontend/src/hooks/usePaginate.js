@@ -9,11 +9,11 @@ const range = (start, end) => {
 }
 
 export const usePaginate = ({pageSize=4, siblingCount = 1, page, pages }) => {
-    const paginationRange = useMemo(() => {
+    const paginateRange = useMemo(() => {
         const totalPageNumbers = siblingCount + 5 //max page numbers show on screen
 
         //case 1: number of pages needed < page numbers we want to display, then display all page numbers
-        if (pages < totalPageNumbers) {
+        if (pages <= totalPageNumbers) {
             return range(1, pages)
         }
 
@@ -50,5 +50,5 @@ export const usePaginate = ({pageSize=4, siblingCount = 1, page, pages }) => {
 
     }, [pageSize, siblingCount, page])
 
-    return paginationRange
+    return paginateRange
 }
