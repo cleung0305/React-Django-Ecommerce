@@ -11,7 +11,6 @@ from base.models import Product, Review
 from base.serializers import ProductSerializer
 
 # Create your views here.
-
 @api_view(['GET'])
 def getProducts(request): # get all products
     query = request.query_params.get('keyword')
@@ -20,7 +19,7 @@ def getProducts(request): # get all products
     products = Product.objects.filter(isPublished=True, name__icontains=query).order_by('-created_at')
 
     page = request.query_params.get('page')
-    paginator = Paginator(products, 1)
+    paginator = Paginator(products, 20)
 
     if page == None: page = 1
 
@@ -46,9 +45,28 @@ def getProduct(request, pk): # get single product
 @api_view(['GET'])
 @permission_classes([IsAdminUser])
 def getProductList(request): # get product list admin page
-    products = Product.objects.all()
+    query = request.query_params.get('keyword')
+    if query is None: query = ''
+
+    products = Product.objects.filter(name__icontains=query).order_by('-created_at')
+
+    page = request.query_params.get('page')
+    paginator = Paginator(products, 10)
+
+    if page == None: page = 1
+
+    try:
+        page = int(page)
+        products = paginator.page(page) # Whatever page number passed from frontend
+    except PageNotAnInteger:
+        products = paginator.page(1) # When no page number passed, show the first page
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages) # If page is empty, show the last page instead
+    except ValueError:
+        products = paginator.page(1)
+
     serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    return Response({'products':serializer.data, 'page':page, 'pages':paginator.num_pages})
 
 @api_view(['POST'])
 @permission_classes([IsAdminUser])

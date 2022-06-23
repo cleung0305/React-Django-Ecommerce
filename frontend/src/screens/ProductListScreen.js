@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
-import { Table, Button, Row, Col } from 'react-bootstrap'
+import { Table, Button, Row, Col, Pagination } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import Paginate from '../components/Paginate'
 import { listProductsAdmin, createProduct, deleteProduct } from '../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
@@ -15,7 +16,7 @@ function ProductListScreen() {
     const { userInfo } = userLogin
 
     const productListAdmin = useSelector(state => state.productListAdmin)
-    const { products, loading, error } = productListAdmin
+    const { products, loading, error, pages, page } = productListAdmin
 
     const productCreate = useSelector(state => state.productCreate)
     const { product, success:successCreate, loading:loadingCreate, error:errorCreate } = productCreate
@@ -25,6 +26,9 @@ function ProductListScreen() {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    const location = useLocation()
+
+    let keyword = location.search
 
     useEffect(() => {
         dispatch({ type:PRODUCT_CREATE_RESET })
@@ -36,12 +40,12 @@ function ProductListScreen() {
             if(successCreate){
                 navigate(`/admin/product/${product._id}/edit`)
             } else{
-                dispatch(listProductsAdmin())
+                dispatch(listProductsAdmin(keyword))
             }
         } else{
             navigate('/login?redirect=admin/all-products')
         }
-    }, [dispatch, navigate, userInfo, successDelete, successCreate, product])
+    }, [dispatch, navigate, userInfo, successDelete, successCreate, product, keyword])
 
     const deleteHandler = (id, name) => {
         if(window.confirm(`Deleting product: ${name}`)){
@@ -80,39 +84,42 @@ function ProductListScreen() {
             { loading && <Loader /> }
             { products && 
                 (
-                    <Table striped responsive bordered hover>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Brand</th>
-                                <th>Category</th>
-                                <th>Price</th>
-                                <th>Rating</th>
-                                <th>Is published</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            { products.map(product => (
-                                <tr key={product._id}>
-                                    <td>{ String(product._id).padStart(5, '0') }</td>
-                                    <td>{ product.name }</td>
-                                    <td>{ product.brand }</td>
-                                    <td>{ product.category }</td>
-                                    <td>{ product.price }</td>
-                                    <td>{ product.rating }</td>
-                                    <td>{ product.isPublished ? 'Yes' : 'No' }</td>
-                                    <td>
-                                        <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                                            <Button variant="light" className="btn-sm"><i className="fas fa-edit"></i></Button>
-                                        </LinkContainer>
-                                    </td>
-                                    <td><Button variant="danger" className="btn-sm" onClick={() => deleteHandler(product._id, product.name)}><i className="fas fa-trash"></i></Button></td>
+                    <div>
+                        <Table striped responsive bordered hover>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Brand</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Rating</th>
+                                    <th>Is published</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </Table>
+                            </thead>
+
+                            <tbody>
+                                { products.map(product => (
+                                    <tr key={product._id}>
+                                        <td>{ String(product._id).padStart(5, '0') }</td>
+                                        <td>{ product.name }</td>
+                                        <td>{ product.brand }</td>
+                                        <td>{ product.category }</td>
+                                        <td>{ product.price }</td>
+                                        <td>{ product.rating }</td>
+                                        <td>{ product.isPublished ? 'Yes' : 'No' }</td>
+                                        <td>
+                                            <LinkContainer to={`/admin/product/${product._id}/edit`}>
+                                                <Button variant="light" className="btn-sm"><i className="fas fa-edit"></i></Button>
+                                            </LinkContainer>
+                                        </td>
+                                        <td><Button variant="danger" className="btn-sm" onClick={() => deleteHandler(product._id, product.name)}><i className="fas fa-trash"></i></Button></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                        <Paginate page={page} pages={pages} isAdmin={true} />
+                    </div>
                 )
             }
         </div>

@@ -7,7 +7,7 @@ import Product from '../components/Product'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
-import BSPaginate from '../components/BSPaginate'
+// import BSPaginate from '../components/BSPaginate'
 
 import { listProducts } from '../actions/productActions'
 

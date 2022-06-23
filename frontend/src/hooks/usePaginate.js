@@ -8,7 +8,7 @@ const range = (start, end) => {
     return Array.from({ length }, (_, idx) => idx + start)
 }
 
-export const usePaginate = ({pageSize=4, siblingCount = 1, page, pages }) => {
+export const usePaginate = ({page, pages, pageSize=4, siblingCount = 1 }) => {
     const paginateRange = useMemo(() => {
         const totalPageNumbers = siblingCount + 5 //max page numbers show on screen
 

@@ -62,7 +62,7 @@ export const listProductDetail = (id) => async (dispatch) => {
     }
 }
 
-export const listProductsAdmin = () => async (dispatch, getState) => {
+export const listProductsAdmin = (keyword = '') => async (dispatch, getState) => {
     try{
         dispatch({ type:PRODUCT_LIST_ADMIN_REQUEST })
 
@@ -75,7 +75,7 @@ export const listProductsAdmin = () => async (dispatch, getState) => {
             }
         }
 
-        const { data } = await axios.get(`/api/products/admin/all-products`, config)
+        const { data } = await axios.get(`/api/products/admin/all-products${keyword}`, config)
 
         dispatch({
             type:PRODUCT_LIST_ADMIN_SUCCESS,

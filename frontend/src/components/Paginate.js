@@ -1,29 +1,22 @@
-import React from 'react'
+import React, {useState} from 'react'
 import { LinkContainer } from 'react-router-bootstrap'
 import classnames from 'classnames'
 
 import '../pagination.css'
+import Loader from '../components/Loader'
 import { usePaginate, DOTS } from '../hooks/usePaginate'
 
-function Paginate({ page, pages, keyword='', siblingCount=1, isAdmin=false, className }) {
+function Paginate({page, pages, keyword='', siblingCount=1, isAdmin=false}) {
 
     const paginateRange = usePaginate({page:page, pages:pages})
-    console.log(paginateRange)
-
     if(keyword){
         keyword = keyword.split('?keyword=')[1].split('&')[0]
     }
 
-    if(page === 0 || paginateRange.length < 2){
-        return null
-    }
-
-    let lastPage = paginateRange[paginateRange.length - 1]
-
-    return (
-        <ul className={classnames('pagination-container', { [className]: className })}>
+    return ( !paginateRange ? <Loader /> :
+        <ul className={classnames('pagination-container pagination-bar')}>
             {/* Left Arrow */}
-            <LinkContainer key="prev" to={`/?keyword=${keyword}&page=${page - 1}`}>
+            <LinkContainer key="prev" to={!isAdmin ? `/?keyword=${keyword}&page=${page - 1}` : `/admin/all-products/?keyword=${keyword}&page=${page - 1}`}>
                 <li className={classnames('pagination-item', {disabled: page === 1})}>
                     <i className="fa-solid fa-chevron-left"></i>
                 </li>
@@ -36,7 +29,7 @@ function Paginate({ page, pages, keyword='', siblingCount=1, isAdmin=false, clas
                 }
 
                 return (
-                    <LinkContainer key={pageNumber + 1} to={`/?keyword=${keyword}&page=${pageNumber + 1}`}>
+                    <LinkContainer key={pageNumber} to={!isAdmin ? `/?keyword=${keyword}&page=${pageNumber}` : `/admin/all-products/?keyword=${keyword}&page=${pageNumber}`}>
                         <li className={classnames('pagination-item', {selected: pageNumber === page})}>
                             { pageNumber }
                         </li>
@@ -45,7 +38,7 @@ function Paginate({ page, pages, keyword='', siblingCount=1, isAdmin=false, clas
             })}
 
             {/* Right Arrow  */}
-            <LinkContainer key="next" to={`/?keyword=${keyword}&page=${page + 1}`}>
+            <LinkContainer key="next" to={!isAdmin ? `/?keyword=${keyword}&page=${page - 1}` : `/admin/all-products/?keyword=${keyword}&page=${page + 1}`}>
                 <li className={classnames('pagination-item', {disabled: page === pages})}>
                     <i className="fa-solid fa-chevron-right"></i>
                 </li>
