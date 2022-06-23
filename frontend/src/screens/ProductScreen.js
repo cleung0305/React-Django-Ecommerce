@@ -33,7 +33,7 @@ function ProductScreen() {
     const { message } = cart
 
     useEffect(() => {
-
+        dispatch({type: PRODUCT_CREATE_REVIEW_RESET})
         if(successReview){
             setRating(0)
             setComment('')
@@ -217,6 +217,9 @@ function ProductScreen() {
                                                                 size={20}
                                                                 fillColor='#f1a545'
                                                                 emptyColor='#cccccc'
+                                                                allowHalfIcon
+                                                                showTooltip
+                                                                tooltipArray={['Poor', 'Poor', 'Fair', 'Fair', 'Good', 'Good', 'Very Good', 'Very Good', 'Excellent', 'Excellent']}
                                                                 disabled={loadingReview}
                                                             />
                                                         </Form.Group>

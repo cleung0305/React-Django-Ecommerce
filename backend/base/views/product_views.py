@@ -1,3 +1,6 @@
+# Django imports
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 # rest imports
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
@@ -11,9 +14,28 @@ from base.serializers import ProductSerializer
 
 @api_view(['GET'])
 def getProducts(request): # get all products
-    products = Product.objects.filter(isPublished=True).order_by('-created_at')
+    query = request.query_params.get('keyword')
+    if query is None: query = ''
+
+    products = Product.objects.filter(isPublished=True, name__icontains=query).order_by('-created_at')
+
+    page = request.query_params.get('page')
+    paginator = Paginator(products, 1)
+
+    if page == None: page = 1
+
+    try:
+        page = int(page)
+        products = paginator.page(page) # Whatever page number passed from frontend
+    except PageNotAnInteger:
+        products = paginator.page(1) # When no page number passed, show the first page
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages) # If page is empty, show the last page instead
+    except ValueError:
+        products = paginator.page(1)
+
     serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    return Response({'products':serializer.data, 'page':page, 'pages':paginator.num_pages})
 
 @api_view(['GET'])
 def getProduct(request, pk): # get single product

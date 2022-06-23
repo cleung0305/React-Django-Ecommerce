@@ -1,11 +1,12 @@
 import React, {useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Row, Col } from 'react-bootstrap'
+import { useLocation } from 'react-router-dom'
+import { Row, Col, Pagination } from 'react-bootstrap'
 
 import Product from '../components/Product'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import Pagination from '../components/Pagination'
+import Paginate from '../components/Paginate'
 
 import { listProducts } from '../actions/productActions'
 
@@ -13,26 +14,16 @@ import { listProducts } from '../actions/productActions'
 
 function HomeScreen() {
     const dispatch = useDispatch()
+    const location = useLocation()
     const productList = useSelector( state => state.productList)
-    const { error, loading, products } = productList
+    const { error, loading, products, page, pages } = productList
 
-    const [productsOnPage, setProductsOnPage] = useState([])
-    const [currentPage, setCurrentPage] = useState(1)
-    const [pageSize, setPageSize] = useState(4)
-
-    const getProductsOnPage = (products) =>{
-        const firstItemIndex = (currentPage - 1) * pageSize
-        const lastItemIndex = firstItemIndex + pageSize
-        return (products.slice(firstItemIndex, lastItemIndex))
-    }
+    // let keyword = location.search ? location.search.split('keyword=')[1] : ''
+    let keyword = location.search
 
     useEffect(() => {
-        if(products.length === 0){
-            dispatch(listProducts())
-        }else{
-            setProductsOnPage(getProductsOnPage(products))
-        }
-    }, [currentPage, dispatch, pageSize])
+        dispatch(listProducts(keyword))
+    }, [dispatch, keyword])
 
     return (
         <div>
@@ -41,18 +32,19 @@ function HomeScreen() {
             { loading ? <Loader />
                 : error ? <Message variant="danger">{ error }</Message> 
                     :
+                    <div>
                     <Row>
                         {/* On first page load, productsOnPage is not loaded, so use products.slice(0, pageSize) to get first page of items  */}
-                        {(productsOnPage.length === 0 ? products.slice(0, pageSize) : productsOnPage).map(product => (
-                            <Col key={ product._id } xs='auto' sm='auto' md={4} lg={4} xl={3}>
-                                <Product product={product} />
-                            </Col>
-                        ))}
+                        {
+                            products.map(product => (
+                                <Col key={ product._id } xs='auto' sm='auto' md={4} lg={4} xl={3}>
+                                    <Product product={product} />
+                                </Col>
+                            ))
+                        }
                     </Row>
-            }
-
-            { products && 
-                <Pagination className="pagination-bar" currentPage={currentPage} totalCount={products.length} pageSize={pageSize} onPageChange={page => setCurrentPage(page)} />
+                    <Paginate page={page} pages={pages} keyword={keyword} />
+                    </div>
             }
         </div>
     )
