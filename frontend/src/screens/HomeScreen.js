@@ -35,7 +35,6 @@ function HomeScreen() {
                     :
                     <div>
                     <Row>
-                        {/* On first page load, productsOnPage is not loaded, so use products.slice(0, pageSize) to get first page of items  */}
                         {
                             products.map(product => (
                                 <Col key={ product._id } xs='auto' sm='auto' md={4} lg={4} xl={3}>

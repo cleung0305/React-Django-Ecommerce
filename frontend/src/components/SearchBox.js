@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-function SearchBox() {
+function SearchBox({ route='' }) {
 
     const [keyword, setKeyword] = useState('')
 
@@ -12,7 +12,7 @@ function SearchBox() {
     const submitHandler = (e) => {
         e.preventDefault()
         if(keyword){
-            navigate(`/?keyword=${keyword}&page=1`)
+            navigate(`${route}/?keyword=${keyword}&page=1`)
         } else{
             navigate(location.pathname)
         }

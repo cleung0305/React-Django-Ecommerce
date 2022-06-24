@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+import SearchBox from '../components/SearchBox'
 import { listProductsAdmin, createProduct, deleteProduct } from '../actions/productActions'
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants'
 
@@ -72,6 +73,10 @@ function ProductListScreen() {
                     }
                 </Col>
             </Row>
+
+            <div className="col-md-3 mb-3">
+                <SearchBox route={'/admin/all-products'} />
+            </div>
             
             { error && <Message variant="danger">{error}</Message>}
 
