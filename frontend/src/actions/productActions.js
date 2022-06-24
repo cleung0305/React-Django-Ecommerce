@@ -3,6 +3,7 @@ import axios from 'axios'
 import { 
     PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL,
     PRODUCT_DETAIL_REQUEST, PRODUCT_DETAIL_SUCCESS, PRODUCT_DETAIL_FAIL,
+    PRODUCT_TOP_REQUEST, PRODUCT_TOP_SUCCESS, PRODUCT_TOP_FAIL,
 
     //Admin products
     PRODUCT_LIST_ADMIN_REQUEST, PRODUCT_LIST_ADMIN_SUCCESS, PRODUCT_LIST_ADMIN_FAIL,
@@ -55,6 +56,28 @@ export const listProductDetail = (id) => async (dispatch) => {
     }catch(error){
         dispatch({
             type: PRODUCT_DETAIL_FAIL,
+            payload: error.response && error.response.data.detail
+                    ? error.response.data.detail
+                    : error.message,
+        })
+    }
+}
+
+// List Top 5 products
+export const listTopProducts = () => async (dispatch) => {
+    try{
+        dispatch({ type: PRODUCT_TOP_REQUEST })
+
+        const { data } = await axios.get('/api/products/top/')
+
+        dispatch({
+            type: PRODUCT_TOP_SUCCESS,
+            payload: data,
+        })
+
+    } catch(error){
+        dispatch({
+            type: PRODUCT_TOP_FAIL,
             payload: error.response && error.response.data.detail
                     ? error.response.data.detail
                     : error.message,

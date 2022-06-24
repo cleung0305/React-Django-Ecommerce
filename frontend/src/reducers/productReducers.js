@@ -1,6 +1,7 @@
 import { 
     PRODUCT_LIST_REQUEST, PRODUCT_LIST_SUCCESS, PRODUCT_LIST_FAIL,
     PRODUCT_DETAIL_REQUEST, PRODUCT_DETAIL_SUCCESS, PRODUCT_DETAIL_FAIL, PRODUCT_DETAIL_RESET,
+    PRODUCT_TOP_REQUEST, PRODUCT_TOP_SUCCESS, PRODUCT_TOP_FAIL,
 
     //Admin products
     PRODUCT_LIST_ADMIN_REQUEST, PRODUCT_LIST_ADMIN_SUCCESS, PRODUCT_LIST_ADMIN_FAIL,
@@ -48,6 +49,23 @@ export const productDetailReducer = (state = { product:{reviews:[]} }, action) =
 
         case PRODUCT_DETAIL_RESET:
             return { product:{reviews:[]} }
+
+        default:
+            return state
+    }
+}
+
+// Product Top 5
+export const productTopReducer = (state = {products:[]}, action) => {
+    switch(action.type){
+        case PRODUCT_TOP_REQUEST:
+            return { loading:true, products:[] }
+
+        case PRODUCT_TOP_SUCCESS:
+            return { loading:false, success:true, products:action.payload }
+
+        case PRODUCT_TOP_FAIL:
+            return { loading:false, error: action.payload }
 
         default:
             return state

@@ -4,8 +4,9 @@ from base.views import product_views as views
 urlpatterns = [
     path('', views.getProducts, name="get-products"), 
 
-    path('<str:pk>/', views.getProduct, name="get-product"),
     path('<str:pk>/review/', views.createProductReview, name="create-review"),
+    path('top/', views.getTopProducts, name="get-top-products"),
+    path('<str:pk>/', views.getProduct, name="get-product"),
 
     path('admin/all-products/', views.getProductList, name="get-all-products"),
     path('admin/create/', views.createProduct, name="create-product"),
