@@ -21,13 +21,13 @@ function TopProductCarousel() {
         loading ? <Loader />
         : error ? <Message variant="danger">{ error }</Message>
         :(
-            <Carousel pause="hover" className="bg-dark" fluid>
+            <Carousel pause="hover" variant="dark">
                 {products.map(product => (
                     <Carousel.Item key={product._id}>
                         <Link to={`/product/${product._id}`}>
-                            <Image src={product.image} alt={product.name} className="d-block mx-auto" />
-                            <Carousel.Caption className="carousel.caption">
-                                <h5>{product.name} - ${ product.price }</h5>
+                            <Image src={product.image} alt={product.name} className="d-block mx-auto carousel-image" />
+                            <Carousel.Caption className="mx-auto carousel-caption">
+                                <h6>{product.name} - ${ product.price }</h6>
                             </Carousel.Caption>
                         </Link>
                     </Carousel.Item>

@@ -31,3 +31,14 @@ h3{
 .alert-hidden {
     display: none;
   }
+
+.carousel-caption {
+    background-color: #46515b39
+}
+
+@media (max-width: 2000px) {
+    .carousel-image ,
+    .carousel-caption{
+      width:35%
+    }
+  }

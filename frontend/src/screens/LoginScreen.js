@@ -2,31 +2,13 @@ import React, {useState, useEffect} from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Form, Button, Row, Col } from 'react-bootstrap'
 import { useDispatch, useSelector } from 'react-redux'
-import jwt_decode from "jwt-decode"
 
 import useScript from '../hooks/useScript'
+import GoogleSignIn from '../components/GoogleSignIn'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import FormContainer from '../components/FormContainer'
-import googleLogin from '../services/googleLogin'
 import { loginUser } from '../actions/userActions'
-
-const { REACT_APP_GOOGLE_CLIENT_ID } = process.env;
-
-//Handle Google Login
-window.handleGoogleLogin = async(response) => {
-    const access_token = response.credential //access token
-    const info = jwt_decode(response.credential)
-    const data = {
-        email: info.email,
-        first_name: info.given_name,
-        last_name: info.family_name,
-        aud: info.aud //client id, used to validate with the backend
-    }
-    const userInfo = await googleLogin({ data, access_token })
-    localStorage.setItem('userInfo', JSON.stringify(userInfo)) // save returned user data into localstorage
-    window.location.reload()
-}
 
 function LoginScreen() {
     const [email, setEmail] = useState('')
@@ -40,7 +22,7 @@ function LoginScreen() {
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo, loading, error } = userLogin
 
-    const [sdkReady, setSdkReady] = useState(false) // State determine whether the SDK is ready to be mounted
+    const [sdkReadyGoogle, setSdkReadyGoogle] = useState(false) // State determine whether the SDK is ready to be mounted
 
     useScript("https://accounts.google.com/gsi/client", "google") // mount google api script
 
@@ -49,7 +31,7 @@ function LoginScreen() {
             navigate(`/${redirect}`)
         }
         if(window.google){
-            setSdkReady(true) //if google api script has mounted, set to true so Google Log In component would appear
+            setSdkReadyGoogle(true) //if google api script has mounted, set to true so Google Log In component would appear
         }
     }, [navigate, userInfo, redirect])
 
@@ -84,24 +66,9 @@ function LoginScreen() {
                     </Col>
                 </Row>
                 {
-                    !sdkReady ? <Loader />
+                    !sdkReadyGoogle ? <Loader />
                             : 
-                            <div>  
-                                <div id="g_id_onload"
-                                    data-client_id={REACT_APP_GOOGLE_CLIENT_ID}
-                                    data-login_uri=""
-                                    data-callback="handleGoogleLogin"
-                                    data-auto_prompt="false">
-                                </div>
-                                <div class="g_id_signin"
-                                    data-type="standard"
-                                    data-size="large"
-                                    data-theme="outline"
-                                    data-text="sign_in_with"
-                                    data-shape="rectangular"
-                                    data-logo_alignment="left">
-                                </div>
-                            </div>
+                            <GoogleSignIn />
                 }
             </FormContainer>
         </>
