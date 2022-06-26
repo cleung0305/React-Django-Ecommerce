@@ -21,7 +21,7 @@ function TopProductCarousel() {
         loading ? <Loader />
         : error ? <Message variant="danger">{ error }</Message>
         :(
-            <Carousel pause="hover" variant="dark">
+            <Carousel pause="hover" variant="dark" className="bg-dark">
                 {products.map(product => (
                     <Carousel.Item key={product._id}>
                         <Link to={`/product/${product._id}`}>
