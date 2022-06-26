@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils import timezone
+# from django.utils import timezone
 
 # Create your models here.
 class Product(models.Model):
@@ -19,7 +19,10 @@ class Product(models.Model):
     _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
+
+    def get_rating(self):
+        pass
 
 class Review(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False)
@@ -27,18 +30,19 @@ class Review(models.Model):
     name = models.CharField(max_length=200, null=True, blank=True)
     rating = models.DecimalField(max_digits=2, decimal_places=1, null=True, blank=True, default=0)
     comment = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True, editable=False)
 
     def __str__(self):
-        return self.product
+        return str(self.product)
 
 #Order Manager
-class OrderManager(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset().exclude(
-            created_date__lte=timezone.now()-timezone.timedelta(days=14),
-            isPaid=False
-        )
+# class OrderManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().exclude(
+#             created_date__lte=timezone.now()-timezone.timedelta(days=14),
+#             isPaid=False
+#         )
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -53,7 +57,7 @@ class Order(models.Model):
     deliverd_date = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True, editable=False)
-    objects = OrderManager()
+    #objects = OrderManager()
 
     def __str__(self):
         return f'${self.user.username} created at ${self.created_date}'
