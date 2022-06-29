@@ -10,7 +10,13 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 /media
+
 venv
+vscode
+gitignore
+package-lock.json
+package.json
+
 /static
 s_key.py
 email_key.py

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +27,7 @@ SECRET_KEY = KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'lokishop.herokuapp.com']
 
 
 # Application definition
@@ -101,6 +102,7 @@ SIMPLE_JWT = {
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 
     
     'django.middleware.security.SecurityMiddleware',
@@ -201,6 +203,10 @@ STATICFILES_DIRS = [
 MEDIA_ROOT = BASE_DIR / 'static/images'
 MEDIA_URL = '/images/'
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" # WhiteNoise Cacheable files...
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -229,3 +235,7 @@ AWS_STORAGE_BUCKET_NAME = "lokishop-bucket"
 
 # Google Sign In 
 GOOGLE_AUTH_CLIENT_ID = "37032365283-im5bbd61k658lvl20u1kas8po1q7o4vr.apps.googleusercontent.com"
+
+# If app running on heroku, DEBUG == False
+if os.getcwd() == '/app':
+    DEBUG = False
