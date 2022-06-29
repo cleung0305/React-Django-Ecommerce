@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-from .s_key import KEY
+from .s_key import KEY, AWS_ACCESS_KEY_ID_SECRET, AWS_SECRET_ACCESS_KEY_SECRET
 SECRET_KEY = KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'rest_auth',
     "corsheaders",
+    'storages',
 
     'base.apps.BaseConfig',
 
@@ -116,7 +117,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'frontend/build'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -142,6 +143,16 @@ DATABASES = {
     }
 }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'lokishop',
+        'USER': 'lok',
+        'PASSWORD': 'loklok12',
+        'HOST': 'lokishop-identifier.cukgv6q3mgp8.us-east-1.rds.amazonaws.com',
+        'PORT': '5432'
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -181,7 +192,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    BASE_DIR / 'static',
+    BASE_DIR / 'frontend/build/static'
 ]
 
 # Media Config
@@ -196,7 +208,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS Config
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000","http://localhost", "http://127.0.0.1:8000"
+    "http://localhost:3000","http://localhost", "http://127.0.0.1", "http://127.0.0.1:8000"
 ]
 # CORS_ALLOW_ALL_ORIGINS = True
 
@@ -206,4 +218,13 @@ AUTHENTICATION_BACKENDS = ('base.custombackends.EmailBackend',)
 #Google Auth settings
 SITE_ID = 1
 
-GOOGLE_AUTH_CLIENT_ID = "37032365283-sppkbus0daiho5kjkcc8oe7mpravd4m4.apps.googleusercontent.com"
+# AWS S3 config
+AWS_QUERYSTRING_AUTH = False
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID_SECRET
+AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY_SECRET
+
+AWS_STORAGE_BUCKET_NAME = "lokishop-bucket"
+
+# Google Sign In 
+GOOGLE_AUTH_CLIENT_ID = "37032365283-im5bbd61k658lvl20u1kas8po1q7o4vr.apps.googleusercontent.com"

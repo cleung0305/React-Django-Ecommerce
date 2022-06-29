@@ -161,12 +161,12 @@ function ProductEditScreen() {
 
                             <Form.Group className="my-2" controlid="price">
                                 <Form.Label>Price</Form.Label>
-                                <Form.Control type="text" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
+                                <Form.Control type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} />
                             </Form.Group>
 
                             <Form.Group className="my-2" controlid="countInStock">
                                 <Form.Label>Count In Stock</Form.Label>
-                                <Form.Control type="text" value={countInStock} onChange={(e) => setCountInStock(Number(e.target.value))} />
+                                <Form.Control type="number" value={countInStock} onChange={(e) => setCountInStock(Number(e.target.value))} />
                             </Form.Group>
         
                             <Form.Group className="my-2" controlid="isPublished">

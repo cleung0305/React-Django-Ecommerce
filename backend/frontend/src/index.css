@@ -33,7 +33,20 @@ h3{
   }
 
 .carousel-caption {
-    background-color: #46515b39
+    opacity: 0;
+}
+
+.carousel-caption h6 {
+    color: #fff;
+}
+
+.carousel-image:hover + .carousel-caption,
+.carousel-caption:hover{
+    display: block;
+    color: #fff;
+    opacity: 1;
+    transition: 0.6s;
+    background-color: #30363c9e
 }
 
 @media (max-width: 2000px) {

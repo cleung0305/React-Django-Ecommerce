@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react'
 
 import jwt_decode from "jwt-decode"
-import useScript from '../hooks/useScript'
 import googleLogin from '../services/googleLogin'
 
 const { REACT_APP_GOOGLE_CLIENT_ID } = process.env;
