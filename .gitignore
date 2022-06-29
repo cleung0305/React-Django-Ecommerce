@@ -12,10 +12,10 @@ db.sqlite3-journal
 /media
 
 .gitignore
-venv
-.vscode
-package-lock.json
-package.json
+/venv
+/.vscode
+/package-lock.json
+/package.json
 
 /static
 s_key.py
