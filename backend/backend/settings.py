@@ -143,14 +143,15 @@ DATABASES = {
     }
 }
 
+from .s_key import POSTGRESQL_DB_NAME, POSTGRESQL_USER, POSTGRESQL_PASSWORD, POSTGRESQL_HOST, POSTGRESQL_PORT
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'lokishop',
-        'USER': 'lok',
-        'PASSWORD': 'loklok12',
-        'HOST': 'lokishop-identifier.cukgv6q3mgp8.us-east-1.rds.amazonaws.com',
-        'PORT': '5432'
+        'NAME': POSTGRESQL_DB_NAME,
+        'USER': POSTGRESQL_USER,
+        'PASSWORD': POSTGRESQL_PASSWORD,
+        'HOST': POSTGRESQL_HOST,
+        'PORT': POSTGRESQL_PORT
     }
 }
 
