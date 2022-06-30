@@ -21,8 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-from .s_key import KEY, AWS_ACCESS_KEY_ID_SECRET, AWS_SECRET_ACCESS_KEY_SECRET
-SECRET_KEY = KEY
+SECRET_KEY = os.environ.get('DJANGO_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -145,15 +144,14 @@ DATABASES = {
     }
 }
 
-from .s_key import POSTGRESQL_DB_NAME, POSTGRESQL_USER, POSTGRESQL_PASSWORD, POSTGRESQL_HOST, POSTGRESQL_PORT
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': POSTGRESQL_DB_NAME,
-        'USER': POSTGRESQL_USER,
-        'PASSWORD': POSTGRESQL_PASSWORD,
-        'HOST': POSTGRESQL_HOST,
-        'PORT': POSTGRESQL_PORT
+        'NAME': 'lokishop',
+        'USER': 'lok',
+        'PASSWORD': os.environ.get('POSTGRESQL_PASSWORD'),
+        'HOST': 'lokishop-identifier.cukgv6q3mgp8.us-east-1.rds.amazonaws.com',
+        'PORT': '5432'
     }
 }
 
@@ -228,13 +226,13 @@ SITE_ID = 1
 # AWS S3 config
 AWS_QUERYSTRING_AUTH = False
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-AWS_ACCESS_KEY_ID = AWS_ACCESS_KEY_ID_SECRET
-AWS_SECRET_ACCESS_KEY = AWS_SECRET_ACCESS_KEY_SECRET
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
 
 AWS_STORAGE_BUCKET_NAME = "lokishop-bucket"
 
 # Google Sign In 
-GOOGLE_AUTH_CLIENT_ID = "37032365283-im5bbd61k658lvl20u1kas8po1q7o4vr.apps.googleusercontent.com"
+GOOGLE_AUTH_CLIENT_ID = os.environ.get('GOOGLE_AUTH_CLIENT_ID')
 
 # If app running on heroku, DEBUG == False
 if os.getcwd() == '/app':
